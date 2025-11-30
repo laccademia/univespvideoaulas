@@ -161,3 +161,11 @@
 - [x] Implementar navegação breadcrumb (Início → Cursos → [Nome do Curso]) - IMPLEMENTADO
 - [x] Adicionar rota no App.tsx - IMPLEMENTADO
 - [x] Testar navegação e validar funcionamento - VALIDADO: página funcionando perfeitamente
+
+
+## 🐛 Bug de Nested Anchor Tags
+
+- [x] Erro: `<a>` cannot contain a nested `<a>` na página /cursos/:id - CORRIGIDO
+- [x] Identificar onde está o nested anchor (breadcrumb + card de disciplina) - IDENTIFICADO: breadcrumb
+- [x] Substituir Card wrapper por div com onClick em vez de Link - CORRIGIDO: removido <a> de dentro de <Link>
+- [x] Testar e validar correção - VALIDADO: sem erros no console

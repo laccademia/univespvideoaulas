@@ -53,12 +53,12 @@ export default function CursoDetalhes() {
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
-          <Link href="/">
-            <a className="hover:text-foreground transition-colors">Início</a>
+          <Link href="/" className="hover:text-foreground transition-colors">
+            Início
           </Link>
           <span>→</span>
-          <Link href="/cursos">
-            <a className="hover:text-foreground transition-colors">Cursos</a>
+          <Link href="/cursos" className="hover:text-foreground transition-colors">
+            Cursos
           </Link>
           <span>→</span>
           <span className="text-foreground font-medium">{curso.nome}</span>
