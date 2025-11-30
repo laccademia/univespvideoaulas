@@ -1,11 +1,25 @@
-import { eq } from "drizzle-orm";
+import { eq, and, like, or, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { 
+  InsertUser, 
+  users,
+  cursos,
+  disciplinas,
+  professores,
+  designersInstrucionais,
+  ofertasDisciplinas,
+  videoaulas,
+  InsertCurso,
+  InsertDisciplina,
+  InsertProfessor,
+  InsertDesignerInstrucional,
+  InsertOfertaDisciplina,
+  InsertVideoaula,
+} from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -17,6 +31,10 @@ export async function getDb() {
   }
   return _db;
 }
+
+// ============================================
+// USER QUERIES
+// ============================================
 
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) {
@@ -89,4 +107,261 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ============================================
+// CURSO QUERIES
+// ============================================
+
+export async function insertCurso(curso: InsertCurso) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(cursos).values(curso).onDuplicateKeyUpdate({
+    set: { eixo: curso.eixo, nome: curso.nome }
+  });
+}
+
+export async function getAllCursos() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(cursos);
+}
+
+export async function getCursoById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(cursos).where(eq(cursos.id, id)).limit(1);
+  return result[0] || null;
+}
+
+export async function getCursoByNome(nome: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(cursos).where(eq(cursos.nome, nome)).limit(1);
+  return result[0] || null;
+}
+
+// ============================================
+// DISCIPLINA QUERIES
+// ============================================
+
+export async function insertDisciplina(disciplina: InsertDisciplina) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(disciplinas).values(disciplina).onDuplicateKeyUpdate({
+    set: { 
+      nome: disciplina.nome,
+      cargaHoraria: disciplina.cargaHoraria,
+      anoCurso: disciplina.anoCurso,
+      bimestrePedagogico: disciplina.bimestrePedagogico,
+      cursoId: disciplina.cursoId
+    }
+  });
+}
+
+export async function getAllDisciplinas() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(disciplinas);
+}
+
+export async function getDisciplinaByCodigo(codigo: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(disciplinas).where(eq(disciplinas.codigo, codigo)).limit(1);
+  return result[0] || null;
+}
+
+export async function getDisciplinasByCursoId(cursoId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(disciplinas).where(eq(disciplinas.cursoId, cursoId));
+}
+
+// ============================================
+// PROFESSOR QUERIES
+// ============================================
+
+export async function insertProfessor(professor: InsertProfessor) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(professores).values(professor).onDuplicateKeyUpdate({
+    set: { nome: professor.nome }
+  });
+}
+
+export async function getAllProfessores() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(professores);
+}
+
+export async function getProfessorByNome(nome: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(professores).where(eq(professores.nome, nome)).limit(1);
+  return result[0] || null;
+}
+
+// ============================================
+// DESIGNER INSTRUCIONAL QUERIES
+// ============================================
+
+export async function insertDesignerInstrucional(di: InsertDesignerInstrucional) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(designersInstrucionais).values(di).onDuplicateKeyUpdate({
+    set: { nome: di.nome }
+  });
+}
+
+export async function getAllDesignersInstrucionais() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(designersInstrucionais);
+}
+
+export async function getDesignerInstrucionalByNome(nome: string) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(designersInstrucionais).where(eq(designersInstrucionais.nome, nome)).limit(1);
+  return result[0] || null;
+}
+
+// ============================================
+// OFERTA DISCIPLINA QUERIES
+// ============================================
+
+export async function insertOfertaDisciplina(oferta: InsertOfertaDisciplina) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(ofertasDisciplinas).values(oferta);
+  return result;
+}
+
+export async function getOfertaByDisciplinaAnoEBimestre(disciplinaId: number, ano: number, bimestreOperacional: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(ofertasDisciplinas).where(
+    and(
+      eq(ofertasDisciplinas.disciplinaId, disciplinaId),
+      eq(ofertasDisciplinas.ano, ano),
+      eq(ofertasDisciplinas.bimestreOperacional, bimestreOperacional)
+    )
+  ).limit(1);
+  
+  return result[0] || null;
+}
+
+// ============================================
+// VIDEOAULA QUERIES
+// ============================================
+
+export async function insertVideoaula(videoaula: InsertVideoaula) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.insert(videoaulas).values(videoaula);
+}
+
+export async function getAllVideoaulas() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select().from(videoaulas);
+}
+
+export async function getVideoaulaById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(videoaulas).where(eq(videoaulas.id, id)).limit(1);
+  return result[0] || null;
+}
+
+// ============================================
+// QUERIES COMPLEXAS COM JOINS
+// ============================================
+
+export async function getVideoaulasComDetalhes() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select({
+      videoaula: videoaulas,
+      oferta: ofertasDisciplinas,
+      disciplina: disciplinas,
+      curso: cursos,
+      professor: professores,
+      di: designersInstrucionais,
+    })
+    .from(videoaulas)
+    .leftJoin(ofertasDisciplinas, eq(videoaulas.ofertaDisciplinaId, ofertasDisciplinas.id))
+    .leftJoin(disciplinas, eq(ofertasDisciplinas.disciplinaId, disciplinas.id))
+    .leftJoin(cursos, eq(disciplinas.cursoId, cursos.id))
+    .leftJoin(professores, eq(ofertasDisciplinas.professorId, professores.id))
+    .leftJoin(designersInstrucionais, eq(ofertasDisciplinas.diId, designersInstrucionais.id))
+    .orderBy(desc(videoaulas.id));
+}
+
+export async function getDisciplinasComCurso() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db
+    .select({
+      disciplina: disciplinas,
+      curso: cursos,
+    })
+    .from(disciplinas)
+    .leftJoin(cursos, eq(disciplinas.cursoId, cursos.id));
+}
+
+// ============================================
+// ESTATÍSTICAS
+// ============================================
+
+export async function getEstatisticasGerais() {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const [totalVideoaulas] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas);
+  const [totalDisciplinas] = await db.select({ count: sql<number>`count(*)` }).from(disciplinas);
+  const [totalCursos] = await db.select({ count: sql<number>`count(*)` }).from(cursos);
+  const [totalProfessores] = await db.select({ count: sql<number>`count(*)` }).from(professores);
+  const [totalDIs] = await db.select({ count: sql<number>`count(*)` }).from(designersInstrucionais);
+  
+  const [comLibras] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(sql`${videoaulas.linkLibras} IS NOT NULL AND ${videoaulas.linkLibras} != ''`);
+  const [comAudiodescricao] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(sql`${videoaulas.linkAudiodescricao} IS NOT NULL AND ${videoaulas.linkAudiodescricao} != ''`);
+  const [comCC] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(eq(videoaulas.ccLegenda, true));
+  const [comSlides] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(eq(videoaulas.slidesDisponivel, true));
+  
+  return {
+    totalVideoaulas: totalVideoaulas?.count || 0,
+    totalDisciplinas: totalDisciplinas?.count || 0,
+    totalCursos: totalCursos?.count || 0,
+    totalProfessores: totalProfessores?.count || 0,
+    totalDIs: totalDIs?.count || 0,
+    acessibilidade: {
+      comLibras: comLibras?.count || 0,
+      comAudiodescricao: comAudiodescricao?.count || 0,
+      comCC: comCC?.count || 0,
+    },
+    comSlides: comSlides?.count || 0,
+  };
+}
