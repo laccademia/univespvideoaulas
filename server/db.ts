@@ -344,7 +344,7 @@ export async function getDisciplinasComCurso() {
   if (!db) return [];
   
   // Buscar disciplinas com seus cursos através da tabela de relacionamento
-  return await db
+  const results = await db
     .select({
       disciplina: disciplinas,
       curso: cursos,
@@ -353,6 +353,26 @@ export async function getDisciplinasComCurso() {
     .from(disciplinas)
     .leftJoin(cursosDisciplinas, eq(disciplinas.id, cursosDisciplinas.disciplinaId))
     .leftJoin(cursos, eq(cursosDisciplinas.cursoId, cursos.id));
+  
+  // Agrupar disciplinas únicas com seus cursos
+  const disciplinasMap = new Map();
+  
+  for (const row of results) {
+    const disciplinaId = row.disciplina.id;
+    
+    if (!disciplinasMap.has(disciplinaId)) {
+      disciplinasMap.set(disciplinaId, {
+        disciplina: row.disciplina,
+        cursos: [],
+      });
+    }
+    
+    if (row.curso) {
+      disciplinasMap.get(disciplinaId).cursos.push(row.curso);
+    }
+  }
+  
+  return Array.from(disciplinasMap.values());
 }
 
 // ============================================

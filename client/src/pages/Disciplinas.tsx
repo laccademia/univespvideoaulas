@@ -14,18 +14,28 @@ export default function Disciplinas() {
   // Extrair eixos únicos
   const eixos = useMemo(() => {
     if (!disciplinas) return [];
-    const eixosSet = new Set(disciplinas.map(item => item.curso?.eixo).filter(Boolean));
+    const eixosSet = new Set<string>();
+    disciplinas.forEach(item => {
+      item.cursos.forEach((curso: any) => {
+        if (curso.eixo) eixosSet.add(curso.eixo);
+      });
+    });
     return Array.from(eixosSet).sort();
   }, [disciplinas]);
 
   // Extrair cursos do eixo selecionado
   const cursos = useMemo(() => {
     if (!disciplinas) return [];
-    const disciplinasFiltradas = eixoSelecionado === "todos" 
-      ? disciplinas 
-      : disciplinas.filter(item => item.curso?.eixo === eixoSelecionado);
+    const cursosSet = new Set<string>();
     
-    const cursosSet = new Set(disciplinasFiltradas.map(item => item.curso?.nome).filter(Boolean));
+    disciplinas.forEach(item => {
+      item.cursos.forEach((curso: any) => {
+        if (eixoSelecionado === "todos" || curso.eixo === eixoSelecionado) {
+          if (curso.nome) cursosSet.add(curso.nome);
+        }
+      });
+    });
+    
     return Array.from(cursosSet).sort();
   }, [disciplinas, eixoSelecionado]);
 
@@ -34,9 +44,15 @@ export default function Disciplinas() {
     if (!disciplinas) return [];
     
     return disciplinas.filter(item => {
-      const matchEixo = eixoSelecionado === "todos" || item.curso?.eixo === eixoSelecionado;
-      const matchCurso = cursoSelecionado === "todos" || item.curso?.nome === cursoSelecionado;
-      return matchEixo && matchCurso;
+      // Se não tem cursos associados, não mostrar
+      if (item.cursos.length === 0) return false;
+      
+      // Verificar se algum dos cursos da disciplina corresponde aos filtros
+      return item.cursos.some((curso: any) => {
+        const matchEixo = eixoSelecionado === "todos" || curso.eixo === eixoSelecionado;
+        const matchCurso = cursoSelecionado === "todos" || curso.nome === cursoSelecionado;
+        return matchEixo && matchCurso;
+      });
     });
   }, [disciplinas, eixoSelecionado, cursoSelecionado]);
 
@@ -70,7 +86,7 @@ export default function Disciplinas() {
               <SelectContent>
                 <SelectItem value="todos">Todos os Eixos</SelectItem>
                 {eixos.map((eixo) => (
-                  <SelectItem key={eixo} value={eixo!}>
+                  <SelectItem key={eixo} value={eixo}>
                     {eixo}
                   </SelectItem>
                 ))}
@@ -90,7 +106,7 @@ export default function Disciplinas() {
               <SelectContent>
                 <SelectItem value="todos">Todos os Cursos</SelectItem>
                 {cursos.map((curso) => (
-                  <SelectItem key={curso} value={curso!}>
+                  <SelectItem key={curso} value={curso}>
                     {curso}
                   </SelectItem>
                 ))}
@@ -124,37 +140,53 @@ export default function Disciplinas() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {disciplinasFiltradas?.map((item) => (
-              <Card key={item.disciplina.id} className="hover:shadow-lg transition-all hover:-translate-y-1">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <BookOpen className="h-5 w-5 text-primary" />
+            {disciplinasFiltradas?.map((item) => {
+              // Pegar o primeiro curso para exibir (ou o curso filtrado se houver)
+              const cursoExibir = cursoSelecionado !== "todos" 
+                ? item.cursos.find((c: any) => c.nome === cursoSelecionado) || item.cursos[0]
+                : item.cursos[0];
+              
+              const isMultiCurso = item.cursos.length > 1;
+              
+              return (
+                <Card key={item.disciplina.id} className="hover:shadow-lg transition-all hover:-translate-y-1">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                      </div>
+                      <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
+                        {item.disciplina.codigo}
+                      </span>
                     </div>
-                    <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
-                      {item.disciplina.codigo}
-                    </span>
-                  </div>
-                  <CardTitle className="text-base line-clamp-2">{item.disciplina.nome}</CardTitle>
-                  <CardDescription className="text-xs space-y-1">
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium">{item.curso?.nome}</span>
+                    <CardTitle className="text-base line-clamp-2">{item.disciplina.nome}</CardTitle>
+                    <CardDescription className="text-xs space-y-1">
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium">{cursoExibir?.nome}</span>
+                      </div>
+                      <div className="text-muted-foreground">
+                        Eixo: {cursoExibir?.eixo}
+                      </div>
+                      {isMultiCurso && (
+                        <div className="pt-1">
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0.5">
+                            +{item.cursos.length - 1} {item.cursos.length === 2 ? 'outro curso' : 'outros cursos'}
+                          </Badge>
+                        </div>
+                      )}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="h-3 w-3" />
+                        <span>{item.disciplina.cargaHoraria}h</span>
+                      </div>
                     </div>
-                    <div className="text-muted-foreground">
-                      Eixo: {item.curso?.eixo}
-                    </div>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="h-3 w-3" />
-                      <span>{item.disciplina.cargaHoraria}h</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
 

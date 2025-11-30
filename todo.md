@@ -191,3 +191,5 @@
 - [x] Testar e validar contagem correta - VALIDADO: todos os cursos com número correto de disciplinas (43, 43, 50, 32, 53, 36, 41, 41, 33)
 
 **NOTA:** Checkpoint intermediário salvo. Próximos passos: atualizar seed.ts, routers.ts e frontend.
+
+- [x] Corrigir erro de chaves duplicadas na página /disciplinas (disciplina ID 60032 aparece duplicada) - CORRIGIDO: getDisciplinasComCurso agora agrupa disciplinas únicas com array de cursos
