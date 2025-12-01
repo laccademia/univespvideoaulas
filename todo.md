@@ -368,3 +368,15 @@
 - [x] Implementar exclusão com confirmação
 - [x] Adicionar rota no App.tsx
 - [x] Testar fluxo completo
+
+
+## 🔍 Filtros Avançados na Listagem Administrativa de Videoaulas
+
+- [x] Adicionar dropdown de filtro por curso
+- [x] Adicionar dropdown de filtro por disciplina
+- [x] Adicionar dropdown de filtro por ano (já existia)
+- [x] Adicionar dropdown de filtro por bimestre (já existia)
+- [x] Implementar botão "Limpar Filtros"
+- [x] Atualizar contador de resultados com filtros aplicados
+- [x] Testar combinações de filtros
+- [x] Validar funcionamento completo

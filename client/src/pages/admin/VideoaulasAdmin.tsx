@@ -36,10 +36,15 @@ export default function VideoaulasAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterAno, setFilterAno] = useState<string>("all");
   const [filterBimestre, setFilterBimestre] = useState<string>("all");
+  const [filterCurso, setFilterCurso] = useState<string>("all");
+  const [filterDisciplina, setFilterDisciplina] = useState<string>("all");
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const { data: response, isLoading, refetch } = trpc.videoaulas.list.useQuery({ limit: 10000 });
   const videoaulas = response?.items || [];
+  
+  const { data: cursos } = trpc.cursos.list.useQuery();
+  const { data: disciplinas } = trpc.disciplinas.listComCurso.useQuery();
   const deleteMutation = trpc.admin.videoaulas.delete.useMutation({
     onSuccess: () => {
       toast.success("Videoaula excluída com sucesso!");
@@ -50,6 +55,16 @@ export default function VideoaulasAdmin() {
       toast.error(`Erro ao excluir: ${error.message}`);
     },
   });
+
+  // Disciplinas filtradas por curso (se curso selecionado)
+  const disciplinasDoCurso = useMemo(() => {
+    if (filterCurso === "all" || !disciplinas) return null;
+    return disciplinas
+      .filter((item: any) => 
+        item.cursos?.some((c: any) => c.id.toString() === filterCurso)
+      )
+      .map((item: any) => item.disciplina.id);
+  }, [filterCurso, disciplinas]);
 
   const filtered = useMemo(() => {
     if (!videoaulas || videoaulas.length === 0) return [];
@@ -63,9 +78,15 @@ export default function VideoaulasAdmin() {
       const matchesAno = filterAno === "all" || item.oferta?.ano.toString() === filterAno;
       const matchesBimestre = filterBimestre === "all" || item.oferta?.bimestreOperacional.toString() === filterBimestre;
       
-      return matchesSearch && matchesAno && matchesBimestre;
+      // Filtro por curso: verifica se a disciplina da videoaula está no curso selecionado
+      const matchesCurso = filterCurso === "all" || 
+        (disciplinasDoCurso && disciplinasDoCurso.includes(item.disciplina?.id));
+      
+      const matchesDisciplina = filterDisciplina === "all" || item.disciplina?.id.toString() === filterDisciplina;
+      
+      return matchesSearch && matchesAno && matchesBimestre && matchesCurso && matchesDisciplina;
     });
-  }, [videoaulas, searchTerm, filterAno, filterBimestre]);
+  }, [videoaulas, searchTerm, filterAno, filterBimestre, filterCurso, filterDisciplina, disciplinasDoCurso]);
 
   const anos = useMemo(() => {
     if (!videoaulas || videoaulas.length === 0) return [];
@@ -142,6 +163,49 @@ export default function VideoaulasAdmin() {
               <SelectItem value="4">Bimestre 4</SelectItem>
             </SelectContent>
           </Select>
+
+          <Select value={filterCurso} onValueChange={setFilterCurso}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Curso" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os cursos</SelectItem>
+              {cursos?.map((curso: any) => (
+                <SelectItem key={curso.id} value={curso.id.toString()}>
+                  {curso.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={filterDisciplina} onValueChange={setFilterDisciplina}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Disciplina" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as disciplinas</SelectItem>
+              {disciplinas?.map((item: any) => (
+                <SelectItem key={item.disciplina.id} value={item.disciplina.id.toString()}>
+                  {item.disciplina.codigo} - {item.disciplina.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {(filterAno !== "all" || filterBimestre !== "all" || filterCurso !== "all" || filterDisciplina !== "all" || searchTerm) && (
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchTerm("");
+                setFilterAno("all");
+                setFilterBimestre("all");
+                setFilterCurso("all");
+                setFilterDisciplina("all");
+              }}
+            >
+              Limpar Filtros
+            </Button>
+          )}
         </div>
 
         {/* Tabela */}
