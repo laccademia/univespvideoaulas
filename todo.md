@@ -689,3 +689,16 @@
 - [x] Atualizar AdminDashboard para usar AdminLayout
 - [x] Corrigir nested anchor tags no AdminLayout
 - [x] Testar navegação e salvar checkpoint
+
+
+## 🎨 Padronização de Cards com Bordas Neon
+- [x] Criar classes CSS neon para todas as cores da paleta
+- [x] Atualizar página Cursos com cards neon (verde)
+- [x] Atualizar página Disciplinas com cards neon (roxo)
+- [x] Atualizar página Videoaulas com cards neon (ciano)
+- [x] Atualizar página Professores com cards neon (laranja)
+- [x] Atualizar página Designers Instrucionais com cards neon (amarelo)
+- [x] Atualizar AdminDashboard com cards neon (ciano, roxo, verde, amarelo)
+- [x] Atualizar GerenciarUsuarios com cards neon (ciano, magenta)
+- [x] Testar visual em todas as páginas
+- [x] Salvar checkpoint

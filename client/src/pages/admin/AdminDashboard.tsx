@@ -80,7 +80,7 @@ export default function AdminDashboard() {
           {statsCards.map((stat) => {
             const Icon = stat.icon;
             return (
-              <Card key={stat.title}>
+              <Card key={stat.title} className="neon-card-cyan rounded-xl">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
               const Icon = action.icon;
               return (
                 <Link key={action.href} href={action.href}>
-                  <Card className="hover:shadow-lg transition-all cursor-pointer h-full">
+                  <Card className="neon-card-purple rounded-xl cursor-pointer h-full">
                     <CardHeader>
                       <div className={`h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-2 ${action.color}`}>
                         <Icon className="h-5 w-5" />
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold mb-4">Gestão de Conteúdo</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link href="/admin/videoaulas">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Video className="h-5 w-5" />
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/disciplinas">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/cursos">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <GraduationCap className="h-5 w-5" />
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/professores">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/designers">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Palette className="h-5 w-5" />
@@ -198,7 +198,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/usuarios">
-              <Card className="hover:shadow-lg transition-all cursor-pointer border-2" style={{ borderColor: '#FFE600' }}>
+              <Card className="neon-card-yellow rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" style={{ color: '#FFE600' }} />
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold mb-4">Importação e Relatórios</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Link href="/admin/importar/acessibilidade">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Upload className="h-5 w-5" />
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/importar/disciplinas">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5" />
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/importar/videoaulas">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Video className="h-5 w-5" />
@@ -260,7 +260,7 @@ export default function AdminDashboard() {
             </Link>
 
             <Link href="/admin/importacoes/historico">
-              <Card className="hover:shadow-lg transition-all cursor-pointer">
+              <Card className="neon-card-green rounded-xl cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <History className="h-5 w-5" />

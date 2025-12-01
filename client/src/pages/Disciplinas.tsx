@@ -66,8 +66,8 @@ export default function Disciplinas() {
     <Layout>
       <div className="container py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Disciplinas</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl font-bold mb-2 text-white">Disciplinas</h1>
+          <p className="text-gray-400">
             Navegue pelas disciplinas oferecidas nos cursos da Univesp.
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function Disciplinas() {
               const isMultiCurso = item.cursos.length > 1;
               
               return (
-                <Card key={item.disciplina.id} className="hover:shadow-lg transition-all hover:-translate-y-1">
+                <Card key={item.disciplina.id} className="neon-card-purple rounded-xl">
                   <CardHeader>
                     <div className="flex items-start justify-between mb-2">
                       <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">

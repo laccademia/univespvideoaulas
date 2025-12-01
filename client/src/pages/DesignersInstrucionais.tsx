@@ -23,7 +23,7 @@ export default function DesignersInstrucionais() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {dis?.map((di) => (
-              <Card key={di.id} className="hover:shadow-lg transition-all hover:-translate-y-1">
+              <Card key={di.id} className="neon-card-yellow rounded-xl">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 rounded-full bg-secondary/10 flex items-center justify-center">

@@ -91,13 +91,7 @@ export default function GerenciarUsuarios() {
           </div>
 
           {/* Hierarquia de Permissões */}
-          <Card 
-            className="mb-8"
-            style={{ 
-              backgroundColor: '#141C2F',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}
-          >
+          <Card className="mb-8 neon-card-cyan rounded-xl">
             <CardHeader>
               <CardTitle className="text-white">📊 Hierarquia de Permissões</CardTitle>
               <CardDescription className="text-gray-400">
@@ -158,7 +152,7 @@ export default function GerenciarUsuarios() {
           </Card>
 
           {/* Todos os Usuários */}
-          <Card style={{ backgroundColor: '#141C2F', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <Card className="neon-card-magenta rounded-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <UsersIcon className="h-5 w-5" style={{ color: '#00C2FF' }} />

@@ -11,8 +11,8 @@ export default function Cursos() {
     <Layout>
       <div className="container py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Cursos</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-4xl font-bold mb-2 text-white">Cursos</h1>
+          <p className="text-gray-400">
             Explore os cursos oferecidos pela Univesp e suas disciplinas.
           </p>
         </div>
@@ -25,7 +25,7 @@ export default function Cursos() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cursos?.map((curso) => (
               <Link key={curso.id} href={`/cursos/${curso.id}`}>
-                <Card className="h-full hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer">
+                <Card className="h-full neon-card-green cursor-pointer rounded-xl">
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">

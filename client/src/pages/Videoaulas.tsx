@@ -168,7 +168,7 @@ export default function Videoaulas() {
 
         {/* Estatísticas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card>
+          <Card className="neon-card-cyan rounded-xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total de Videoaulas</CardTitle>
             </CardHeader>
@@ -180,7 +180,7 @@ export default function Videoaulas() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="neon-card-cyan rounded-xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Com Libras</CardTitle>
             </CardHeader>
@@ -192,7 +192,7 @@ export default function Videoaulas() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="neon-card-cyan rounded-xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Com Audiodescrição</CardTitle>
             </CardHeader>
@@ -204,7 +204,7 @@ export default function Videoaulas() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="neon-card-cyan rounded-xl">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Com Legendas (CC)</CardTitle>
             </CardHeader>
@@ -218,7 +218,7 @@ export default function Videoaulas() {
         </div>
 
         {/* Filtros Avançados */}
-        <Card className="mb-8">
+        <Card className="mb-8 neon-card-cyan rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Filter className="h-5 w-5" />
@@ -330,7 +330,7 @@ export default function Videoaulas() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : filteredVideoaulas.length === 0 ? (
-          <Card>
+          <Card className="neon-card-cyan rounded-xl">
             <CardContent className="py-20 text-center">
               <Video className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-lg font-medium mb-2">Nenhuma videoaula encontrada</p>
@@ -356,7 +356,7 @@ export default function Videoaulas() {
                       const videoaulasBimestre = groupedByYearAndBimester[parseInt(ano)][parseInt(bimestre)];
                       
                       return (
-                        <Card key={`${ano}-${bimestre}`} className="mb-6">
+                        <Card key={`${ano}-${bimestre}`} className="mb-6 neon-card-cyan rounded-xl">
                           <CardHeader>
                             <CardTitle className="text-lg">
                               Bimestre Operacional {bimestre}

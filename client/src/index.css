@@ -244,4 +244,104 @@
   .gradient-neon-hero {
     background: linear-gradient(135deg, oklch(0.08 0.02 250) 0%, oklch(0.12 0.03 280) 50%, oklch(0.10 0.02 300) 100%);
   }
+
+  /* Neon Card Borders - All Palette Colors */
+  .neon-card-cyan {
+    background-color: #141C2F;
+    border: 2px solid #00C2FF;
+    box-shadow: 0 0 10px rgba(0, 194, 255, 0.3), inset 0 0 10px rgba(0, 194, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-cyan:hover {
+    box-shadow: 0 0 20px rgba(0, 194, 255, 0.5), inset 0 0 15px rgba(0, 194, 255, 0.15);
+  }
+  
+  .neon-card-purple {
+    background-color: #141C2F;
+    border: 2px solid #9D00FF;
+    box-shadow: 0 0 10px rgba(157, 0, 255, 0.3), inset 0 0 10px rgba(157, 0, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-purple:hover {
+    box-shadow: 0 0 20px rgba(157, 0, 255, 0.5), inset 0 0 15px rgba(157, 0, 255, 0.15);
+  }
+  
+  .neon-card-green {
+    background-color: #141C2F;
+    border: 2px solid #00FF55;
+    box-shadow: 0 0 10px rgba(0, 255, 85, 0.3), inset 0 0 10px rgba(0, 255, 85, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-green:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 85, 0.5), inset 0 0 15px rgba(0, 255, 85, 0.15);
+  }
+  
+  .neon-card-magenta {
+    background-color: #141C2F;
+    border: 2px solid #FF00C7;
+    box-shadow: 0 0 10px rgba(255, 0, 199, 0.3), inset 0 0 10px rgba(255, 0, 199, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-magenta:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 199, 0.5), inset 0 0 15px rgba(255, 0, 199, 0.15);
+  }
+  
+  .neon-card-orange {
+    background-color: #141C2F;
+    border: 2px solid #FF6A00;
+    box-shadow: 0 0 10px rgba(255, 106, 0, 0.3), inset 0 0 10px rgba(255, 106, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-orange:hover {
+    box-shadow: 0 0 20px rgba(255, 106, 0, 0.5), inset 0 0 15px rgba(255, 106, 0, 0.15);
+  }
+  
+  .neon-card-yellow {
+    background-color: #141C2F;
+    border: 2px solid #FFE600;
+    box-shadow: 0 0 10px rgba(255, 230, 0, 0.3), inset 0 0 10px rgba(255, 230, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-yellow:hover {
+    box-shadow: 0 0 20px rgba(255, 230, 0, 0.5), inset 0 0 15px rgba(255, 230, 0, 0.15);
+  }
+  
+  .neon-card-lime {
+    background-color: #141C2F;
+    border: 2px solid #BFFF00;
+    box-shadow: 0 0 10px rgba(191, 255, 0, 0.3), inset 0 0 10px rgba(191, 255, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-lime:hover {
+    box-shadow: 0 0 20px rgba(191, 255, 0, 0.5), inset 0 0 15px rgba(191, 255, 0, 0.15);
+  }
+  
+  .neon-card-blue {
+    background-color: #141C2F;
+    border: 2px solid #3399FF;
+    box-shadow: 0 0 10px rgba(51, 153, 255, 0.3), inset 0 0 10px rgba(51, 153, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-blue:hover {
+    box-shadow: 0 0 20px rgba(51, 153, 255, 0.5), inset 0 0 15px rgba(51, 153, 255, 0.15);
+  }
+  
+  .neon-card-red {
+    background-color: #141C2F;
+    border: 2px solid #FF3333;
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.3), inset 0 0 10px rgba(255, 51, 51, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .neon-card-red:hover {
+    box-shadow: 0 0 20px rgba(255, 51, 51, 0.5), inset 0 0 15px rgba(255, 51, 51, 0.15);
+  }
 }
