@@ -253,3 +253,59 @@
 - [x] Investigar por que disciplinas do ciclo básico mostram "+8 outros cursos" ou "+9 outros cursos" incorretamente
 - [x] Corrigir lógica de contagem de cursos associados
 - [x] Validar que disciplinas compartilhadas mostram contagem correta
+
+## 🔐 Sistema Administrativo Completo
+
+### Sistema de Permissões
+- [x] Adicionar campo `role` na tabela de usuários (admin/user) - JÁ EXISTIA
+- [x] Criar middleware `adminProcedure` no backend para proteger rotas administrativas - JÁ EXISTIA
+- [x] Implementar verificação de permissões no frontend (AuthContext + useAuth hook)
+
+### Painel Administrativo
+- [x] Criar layout AdminLayout com navegação lateral
+- [x] Criar página inicial do painel admin (/admin)
+- [x] Adicionar menu de navegação com seções: Videoaulas, Disciplinas, Cursos, Professores, Designers
+
+### CRUD de Videoaulas
+- [ ] Criar página de listagem de videoaulas (/admin/videoaulas)
+- [ ] Criar formulário de criação de videoaula
+- [ ] Criar formulário de edição de videoaula
+- [ ] Implementar exclusão de videoaula com confirmação
+- [ ] Adicionar procedures no backend: createVideoaula, updateVideoaula, deleteVideoaula
+- [ ] Validar campos obrigatórios e formatos
+
+### CRUD de Disciplinas
+- [ ] Criar página de listagem de disciplinas (/admin/disciplinas)
+- [ ] Criar formulário de criação de disciplina
+- [ ] Criar formulário de edição de disciplina
+- [ ] Implementar exclusão de disciplina com confirmação
+- [ ] Gerenciar associações disciplina-curso (many-to-many)
+- [ ] Adicionar procedures no backend: createDisciplina, updateDisciplina, deleteDisciplina
+
+### CRUD de Cursos
+- [ ] Criar página de listagem de cursos (/admin/cursos)
+- [ ] Criar formulário de criação de curso
+- [ ] Criar formulário de edição de curso
+- [ ] Implementar exclusão de curso com confirmação
+- [ ] Adicionar procedures no backend: createCurso, updateCurso, deleteCurso
+
+### CRUD de Professores
+- [ ] Criar página de listagem de professores (/admin/professores)
+- [ ] Criar formulário de criação de professor
+- [ ] Criar formulário de edição de professor
+- [ ] Implementar exclusão de professor com confirmação
+- [ ] Adicionar procedures no backend: createProfessor, updateProfessor, deleteProfessor
+
+### CRUD de Designers Instrucionais
+- [ ] Criar página de listagem de designers (/admin/designers)
+- [ ] Criar formulário de criação de designer
+- [ ] Criar formulário de edição de designer
+- [ ] Implementar exclusão de designer com confirmação
+- [ ] Adicionar procedures no backend: createDesigner, updateDesigner, deleteDesigner
+
+### Melhorias de UX
+- [ ] Adicionar mensagens de sucesso/erro (toast notifications)
+- [ ] Implementar loading states em formulários
+- [ ] Adicionar confirmação antes de exclusões
+- [ ] Implementar busca e filtros nas listagens administrativas
+- [ ] Adicionar paginação nas tabelas administrativas

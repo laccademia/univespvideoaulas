@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, Menu, X, Video, BarChart3, Users, GraduationCap, BookOpen, Home, PieChart } from "lucide-react";
+import { Moon, Sun, Menu, X, Video, BarChart3, Users, GraduationCap, BookOpen, Home, PieChart, Shield } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 
 interface LayoutProps {
@@ -11,6 +12,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -68,6 +70,18 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
               );
             })}
+            {user?.role === "admin" && (
+              <Link href="/admin">
+                <Button
+                  variant={isActive("/admin") ? "default" : "outline"}
+                  size="sm"
+                  className="gap-2 ml-2"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </Button>
+              </Link>
+            )}
           </nav>
 
           {/* Theme Toggle & Mobile Menu */}

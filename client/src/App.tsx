@@ -14,6 +14,7 @@ import Professores from "./pages/Professores";
 import DesignersInstrucionais from "./pages/DesignersInstrucionais";
 import Estatisticas from "./pages/Estatisticas";
 import Visualizacoes from "./pages/Visualizacoes";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path={"/designers-instrucionais"} component={DesignersInstrucionais} />
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/visualizacoes"} component={Visualizacoes} />
+      <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
