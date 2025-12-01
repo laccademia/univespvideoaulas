@@ -561,12 +561,13 @@
 - [ ] Testar importação
 
 ## 📥 Importação de Videoaulas via CSV
-- [ ] Criar procedure backend importVideoaulas
-- [ ] Criar página /admin/importar/videoaulas
-- [ ] Adicionar validação de dados (disciplina válida, ano/bimestre)
-- [ ] Implementar preview e relatório
-- [ ] Criar template CSV para download
-- [ ] Testar importação
+- [x] Criar procedure backend importVideoaulas
+- [x] Criar página /admin/importar/videoaulas
+- [x] Adicionar validação de dados (disciplina válida, ano/bimestre)
+- [x] Implementar preview e relatório
+- [x] Criar template CSV para download
+- [x] Adicionar link no dashboard admin
+- [x] Testar importação
 
 ## 📊 Exportação de Relatórios de Histórico
 - [ ] Adicionar botão de exportação na página de histórico

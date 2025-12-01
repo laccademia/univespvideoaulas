@@ -232,6 +232,20 @@ export default function AdminDashboard() {
               </Card>
             </Link>
 
+            <Link href="/admin/importar/videoaulas">
+              <Card className="hover:shadow-lg transition-all cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="h-5 w-5" />
+                    Importar Videoaulas
+                  </CardTitle>
+                  <CardDescription>
+                    Cadastrar novas videoaulas em lote via CSV
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+
             <Link href="/admin/importacoes/historico">
               <Card className="hover:shadow-lg transition-all cursor-pointer">
                 <CardHeader>

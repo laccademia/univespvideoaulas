@@ -696,6 +696,85 @@ export const appRouter = router({
           
           return results;
         }),
+      
+      videoaulas: adminProcedure
+        .input(z.array(z.object({
+          idTvCultura: z.string().min(1),
+          titulo: z.string().min(1),
+          codigoDisciplina: z.string().min(1),
+          ano: z.number(),
+          bimestreOperacional: z.number().min(1).max(4),
+          semana: z.number(),
+          numeroAula: z.number(),
+          sinopse: z.string().optional(),
+          linkYoutubeOriginal: z.string().optional(),
+          duracaoMinutos: z.number().optional(),
+        })))
+        .mutation(async ({ input }) => {
+          const db = await getDb();
+          if (!db) throw new Error('Database not available');
+          const results = [];
+          
+          for (const video of input) {
+            try {
+              // Verificar se videoaula já existe
+              const [existing] = await db.select().from(videoaulas).where(eq(videoaulas.idTvCultura, video.idTvCultura)).limit(1);
+              
+              if (existing) {
+                results.push({ idTvCultura: video.idTvCultura, status: 'error', message: 'Videoaula já existe' });
+                continue;
+              }
+              
+              // Buscar disciplina
+              const [disciplina] = await db.select().from(disciplinas).where(eq(disciplinas.codigo, video.codigoDisciplina)).limit(1);
+              
+              if (!disciplina) {
+                results.push({ idTvCultura: video.idTvCultura, status: 'error', message: 'Disciplina não encontrada' });
+                continue;
+              }
+              
+              // Buscar ou criar oferta de disciplina
+              let [oferta] = await db.select().from(ofertasDisciplinas)
+                .where(
+                  and(
+                    eq(ofertasDisciplinas.disciplinaId, disciplina.id),
+                    eq(ofertasDisciplinas.ano, video.ano),
+                    eq(ofertasDisciplinas.bimestreOperacional, video.bimestreOperacional)
+                  )
+                )
+                .limit(1);
+              
+              if (!oferta) {
+                const [novaOferta] = await db.insert(ofertasDisciplinas).values({
+                  disciplinaId: disciplina.id,
+                  ano: video.ano,
+                  bimestreOperacional: video.bimestreOperacional,
+                  tipo: 'OFERTA',
+                }).$returningId();
+                
+                [oferta] = await db.select().from(ofertasDisciplinas).where(eq(ofertasDisciplinas.id, novaOferta.id)).limit(1);
+              }
+              
+              // Criar videoaula
+              await db.insert(videoaulas).values({
+                ofertaDisciplinaId: oferta.id,
+                semana: video.semana,
+                numeroAula: video.numeroAula,
+                titulo: video.titulo,
+                sinopse: video.sinopse,
+                linkYoutubeOriginal: video.linkYoutubeOriginal,
+                idTvCultura: video.idTvCultura,
+                duracaoMinutos: video.duracaoMinutos,
+              });
+              
+              results.push({ idTvCultura: video.idTvCultura, status: 'success', message: 'Criada com sucesso' });
+            } catch (error) {
+              results.push({ idTvCultura: video.idTvCultura, status: 'error', message: error instanceof Error ? error.message : 'Erro desconhecido' });
+            }
+          }
+          
+          return results;
+        }),
     }),
     
     historico: router({

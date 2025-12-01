@@ -32,6 +32,7 @@ import NovoCurso from "./pages/admin/cursos/NovoCurso";
 import EditarCurso from "./pages/admin/cursos/EditarCurso";
 import ImportarAcessibilidade from "./pages/admin/import/ImportarAcessibilidade";
 import ImportarDisciplinas from "./pages/admin/import/ImportarDisciplinas";
+import ImportarVideoaulas from "./pages/admin/import/ImportarVideoaulas";
 import HistoricoImportacoes from "./pages/admin/import/HistoricoImportacoes";
 
 function Router() {
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/admin/cursos/:id/editar" component={EditarCurso} />
       <Route path="/admin/importar/acessibilidade" component={ImportarAcessibilidade} />
       <Route path="/admin/importar/disciplinas" component={ImportarDisciplinas} />
+      <Route path="/admin/importar/videoaulas" component={ImportarVideoaulas} />
       <Route path="/admin/importacoes/historico" component={HistoricoImportacoes} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
