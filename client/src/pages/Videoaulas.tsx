@@ -42,7 +42,7 @@ export default function Videoaulas() {
   const [idTvFiltro, setIdTvFiltro] = useState("");
 
   const { data: videoaulas, isLoading } = trpc.videoaulas.list.useQuery({
-    limit: 1000,
+    limit: 10000, // Limite aumentado para comportar todas as videoaulas
   });
 
   // Aplicar filtro de disciplina da URL

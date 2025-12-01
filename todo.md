@@ -223,3 +223,10 @@
 - [x] Corrigir script de processamento para capturar todos os dados (forward fill aplicado)
 - [x] Reprocessar planilhas 2024 e 2023 completamente (1.205 videoaulas processadas)
 - [x] Validar contagem final contra planilhas originais (1.887 videoaulas totais no sistema)
+
+## 🔧 Resolver Limite de 1000 Videoaulas
+
+- [x] Investigar onde o limite de 1000 está sendo aplicado (frontend, linha 45 de Videoaulas.tsx)
+- [x] Verificar se é limitação do MySQL driver ou query (não, era limite hardcoded no frontend)
+- [x] Corrigir para exibir todas as 1.887 videoaulas (limite aumentado de 1000 para 10000)
+- [x] Validar contagem correta na página de Videoaulas (1887 exibidas corretamente)
