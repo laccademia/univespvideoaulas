@@ -12,7 +12,8 @@ import Videoaulas from "./pages/Videoaulas";
 import VideoaulaDetalhes from "./pages/VideoaulaDetalhes";
 import Professores from "./pages/Professores";
 import DesignersInstrucionais from "./pages/DesignersInstrucionais";
-import Login from "./pages/Login";
+import Login from './pages/Login';
+import ExportData from './pages/ExportData';
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import VideoaulasAdmin from "./pages/admin/VideoaulasAdmin";
@@ -40,6 +41,7 @@ function Router() {
   return (
     <Switch>
       <Route path={"/login"} component={Login} />
+      <Route path={"/export-data"} component={ExportData} />
       <Route path={"/"} component={Home} />
       <Route path={"/cursos"} component={Cursos} />
       <Route path={"/cursos/:id"} component={CursoDetalhes} />

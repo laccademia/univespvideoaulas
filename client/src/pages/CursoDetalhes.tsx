@@ -153,14 +153,7 @@ export default function CursoDetalhes() {
                         <span>{disciplina.cargaHoraria}h</span>
                       </div>
 
-                      {disciplina.anoCurso && disciplina.bimestrePedagogico && (
-                        <div className="flex items-center gap-2">
-                          <GraduationCap className="h-4 w-4" />
-                          <span>
-                            Ano {disciplina.anoCurso} • Bim. {disciplina.bimestrePedagogico}
-                          </span>
-                        </div>
-                      )}
+
                     </div>
                   </CardContent>
                 </Card>

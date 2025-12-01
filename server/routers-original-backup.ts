@@ -7,7 +7,6 @@ import { z } from "zod";
 import { getDb } from "./db";
 import { disciplinas, videoaulas, ofertasDisciplinas, cursosDisciplinas, historicoImportacoes, users } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
-// Imports para leitura pública (Supabase)
 import {
   getAllCursos,
   getCursoById,
@@ -22,10 +21,6 @@ import {
   getVideoaulaById,
   getDisciplinasComCurso,
   getEstatisticasGerais,
-} from "./supabase-adapter";
-
-// Imports para painel administrativo (Manus)
-import {
   createVideoaula,
   updateVideoaula,
   deleteVideoaula,
@@ -33,19 +28,18 @@ import {
   createProfessor,
   updateProfessor,
   deleteProfessor,
-  getProfessorById as getManusProf,
+  getProfessorById,
   createDisciplina,
   updateDisciplina,
   deleteDisciplina,
-  getDisciplinaById as getManusDisciplina,
+  getDisciplinaById,
   createDesignerInstrucional,
   updateDesignerInstrucional,
   deleteDesignerInstrucional,
-  getDesignerInstrucionalById as getManusDesigner,
+  getDesignerInstrucionalById,
   createCurso,
   updateCurso,
   deleteCurso,
-  getCursoById as getManusCurso,
 } from "./db";
 
 export const appRouter = router({
@@ -500,7 +494,7 @@ export const appRouter = router({
       getById: adminProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
-          return await getManusProf(input.id);
+          return await getProfessorById(input.id);
         }),
     }),
 
@@ -545,7 +539,7 @@ export const appRouter = router({
       getById: adminProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
-          return await getManusDisciplina(input.id);
+          return await getDisciplinaById(input.id);
         }),
     }),
 
@@ -579,7 +573,7 @@ export const appRouter = router({
       getById: adminProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
-          return await getManusDesigner(input.id);
+          return await getDesignerInstrucionalById(input.id);
         }),
     }),
 

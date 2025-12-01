@@ -789,3 +789,26 @@
 - [ ] Testar importação de dados
 - [ ] Testar CRUD de videoaulas
 - [ ] Salvar checkpoint final
+
+
+## 🚀 Migração Completa para Supabase
+
+### Concluído
+- [x] Criar checkpoint de segurança antes da migração
+- [x] Exportar todos os dados do banco Manus (1887 videoaulas + todos os outros)
+- [x] Instalar @supabase/supabase-js
+- [x] Criar estrutura de tabelas no Supabase (9 tabelas)
+- [x] Importar todos os dados para Supabase com sucesso
+- [x] Criar tabela users no Supabase com triggers automáticos
+- [x] Criar página de login/cadastro com Supabase Auth
+- [x] Atualizar AuthContext para usar Supabase Auth
+
+### Em Andamento
+- [ ] Migrar server/db.ts para usar Supabase client
+- [ ] Migrar server/routers.ts para usar Supabase queries
+- [ ] Atualizar todas as procedures tRPC
+- [ ] Testar CRUD de videoaulas, disciplinas, cursos, professores, designers
+- [ ] Testar sistema de importação de CSV
+- [ ] Testar sistema de hierarquia de usuários
+- [ ] Testar painel administrativo completo
+- [ ] Salvar checkpoint final da migração
