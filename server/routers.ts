@@ -21,6 +21,14 @@ import {
   updateVideoaula,
   deleteVideoaula,
   getOrCreateOfertaDisciplina,
+  createProfessor,
+  updateProfessor,
+  deleteProfessor,
+  getProfessorById,
+  createDisciplina,
+  updateDisciplina,
+  deleteDisciplina,
+  getDisciplinaById,
 } from "./db";
 
 export const appRouter = router({
@@ -375,6 +383,85 @@ export const appRouter = router({
         .mutation(async ({ input }) => {
           await deleteVideoaula(input.id);
           return { success: true };
+        }),
+    }),
+
+    professores: router({
+      create: adminProcedure
+        .input(z.object({
+          nome: z.string().min(1),
+        }))
+        .mutation(async ({ input }) => {
+          await createProfessor(input);
+          return { success: true };
+        }),
+
+      update: adminProcedure
+        .input(z.object({
+          id: z.number(),
+          nome: z.string().min(1),
+        }))
+        .mutation(async ({ input }) => {
+          await updateProfessor(input.id, { nome: input.nome });
+          return { success: true };
+        }),
+
+      delete: adminProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          await deleteProfessor(input.id);
+          return { success: true };
+        }),
+
+      getById: adminProcedure
+        .input(z.object({ id: z.number() }))
+        .query(async ({ input }) => {
+          return await getProfessorById(input.id);
+        }),
+    }),
+
+    disciplinas: router({
+      create: adminProcedure
+        .input(z.object({
+          codigo: z.string().min(1),
+          nome: z.string().min(1),
+          cargaHoraria: z.number(),
+          cursoIds: z.array(z.number()),
+        }))
+        .mutation(async ({ input }) => {
+          await createDisciplina(input);
+          return { success: true };
+        }),
+
+      update: adminProcedure
+        .input(z.object({
+          id: z.number(),
+          codigo: z.string().min(1),
+          nome: z.string().min(1),
+          cargaHoraria: z.number(),
+          cursoIds: z.array(z.number()),
+        }))
+        .mutation(async ({ input }) => {
+          await updateDisciplina(input.id, {
+            codigo: input.codigo,
+            nome: input.nome,
+            cargaHoraria: input.cargaHoraria,
+            cursoIds: input.cursoIds,
+          });
+          return { success: true };
+        }),
+
+      delete: adminProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          await deleteDisciplina(input.id);
+          return { success: true };
+        }),
+
+      getById: adminProcedure
+        .input(z.object({ id: z.number() }))
+        .query(async ({ input }) => {
+          return await getDisciplinaById(input.id);
         }),
     }),
   }),

@@ -275,12 +275,12 @@
 - [x] Validar campos obrigatórios e formatos
 
 ### CRUD de Disciplinas
-- [ ] Criar página de listagem de disciplinas (/admin/disciplinas)
-- [ ] Criar formulário de criação de disciplina
-- [ ] Criar formulário de edição de disciplina
-- [ ] Implementar exclusão de disciplina com confirmação
-- [ ] Gerenciar associações disciplina-curso (many-to-many)
-- [ ] Adicionar procedures no backend: createDisciplina, updateDisciplina, deleteDisciplina
+- [x] Criar página de listagem de disciplinas (/admin/disciplinas)
+- [x] Criar formulário de criação de disciplina
+- [x] Criar formulário de edição de disciplina
+- [x] Implementar exclusão de disciplina com confirmação
+- [x] Gerenciar associações disciplina-curso (many-to-many)
+- [x] Adicionar procedures no backend: createDisciplina, updateDisciplina, deleteDisciplina
 
 ### CRUD de Cursos
 - [ ] Criar página de listagem de cursos (/admin/cursos)
@@ -290,11 +290,11 @@
 - [ ] Adicionar procedures no backend: createCurso, updateCurso, deleteCurso
 
 ### CRUD de Professores
-- [ ] Criar página de listagem de professores (/admin/professores)
-- [ ] Criar formulário de criação de professor
-- [ ] Criar formulário de edição de professor
-- [ ] Implementar exclusão de professor com confirmação
-- [ ] Adicionar procedures no backend: createProfessor, updateProfessor, deleteProfessor
+- [x] Criar página de listagem de professores (/admin/professores)
+- [x] Criar formulário de criação de professor
+- [x] Criar formulário de edição de professor
+- [x] Implementar exclusão de professor com confirmação
+- [x] Adicionar procedures no backend: createProfessor, updateProfessor, deleteProfessor
 
 ### CRUD de Designers Instrucionais
 - [ ] Criar página de listagem de designers (/admin/designers)
@@ -324,3 +324,24 @@
 - [x] Identificar Select.Item com value vazio em NovaVideoaula.tsx (linhas 255 e 277)
 - [x] Corrigir para usar value não-vazio ou filtrar itens vazios (alterado para value="0")
 - [x] Testar formulário de nova videoaula
+
+## 📚 CRUD de Disciplinas e Professores
+
+### CRUD de Professores
+- [x] Criar backend procedures (create, update, delete) para professores
+- [x] Criar helpers no db.ts para CRUD de professores
+- [x] Criar página de listagem de professores (/admin/professores)
+- [x] Criar formulário de criação de professor
+- [x] Criar formulário de edição de professor
+- [x] Implementar exclusão com confirmação
+- [x] Testar fluxo completo
+
+### CRUD de Disciplinas
+- [x] Criar backend procedures (create, update, delete) para disciplinas
+- [x] Criar helpers no db.ts para CRUD de disciplinas
+- [x] Criar página de listagem de disciplinas (/admin/disciplinas)
+- [x] Criar formulário de criação de disciplina com seleção múltipla de cursos
+- [x] Criar formulário de edição de disciplina
+- [x] Implementar gestão de relacionamento many-to-many com cursos
+- [x] Implementar exclusão com confirmação
+- [x] Testar fluxo completo

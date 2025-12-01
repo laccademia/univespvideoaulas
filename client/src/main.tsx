@@ -8,6 +8,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 import { AuthProvider } from "./contexts/AuthContext";
+import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <App />
+        <Toaster position="top-right" richColors />
       </AuthProvider>
     </QueryClientProvider>
   </trpc.Provider>

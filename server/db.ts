@@ -481,3 +481,121 @@ export async function getOrCreateOfertaDisciplina(
   
   return result.insertId;
 }
+
+
+// ============================================
+// CRUD Helpers - Professores
+// ============================================
+
+export async function createProfessor(data: { nome: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(professores).values(data);
+  return result;
+}
+
+export async function updateProfessor(id: number, data: { nome: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(professores).set(data).where(eq(professores.id, id));
+}
+
+export async function deleteProfessor(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(professores).where(eq(professores.id, id));
+}
+
+export async function getProfessorById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const [professor] = await db.select().from(professores).where(eq(professores.id, id));
+  return professor;
+}
+
+
+// ============================================
+// CRUD Helpers - Disciplinas
+// ============================================
+
+export async function createDisciplina(data: { codigo: string; nome: string; cargaHoraria: number; cursoIds: number[] }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Inserir disciplina
+  const [result] = await db.insert(disciplinas).values({
+    codigo: data.codigo,
+    nome: data.nome,
+    cargaHoraria: data.cargaHoraria,
+  });
+  
+  const disciplinaId = result.insertId;
+  
+  // Inserir relacionamentos com cursos
+  if (data.cursoIds.length > 0) {
+    await db.insert(cursosDisciplinas).values(
+      data.cursoIds.map(cursoId => ({
+        cursoId,
+        disciplinaId,
+      }))
+    );
+  }
+  
+  return result;
+}
+
+export async function updateDisciplina(id: number, data: { codigo: string; nome: string; cargaHoraria: number; cursoIds: number[] }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Atualizar disciplina
+  await db.update(disciplinas).set({
+    codigo: data.codigo,
+    nome: data.nome,
+    cargaHoraria: data.cargaHoraria,
+  }).where(eq(disciplinas.id, id));
+  
+  // Remover relacionamentos antigos
+  await db.delete(cursosDisciplinas).where(eq(cursosDisciplinas.disciplinaId, id));
+  
+  // Inserir novos relacionamentos
+  if (data.cursoIds.length > 0) {
+    await db.insert(cursosDisciplinas).values(
+      data.cursoIds.map(cursoId => ({
+        cursoId,
+        disciplinaId: id,
+      }))
+    );
+  }
+}
+
+export async function deleteDisciplina(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Remover relacionamentos primeiro
+  await db.delete(cursosDisciplinas).where(eq(cursosDisciplinas.disciplinaId, id));
+  
+  // Remover disciplina
+  await db.delete(disciplinas).where(eq(disciplinas.id, id));
+}
+
+export async function getDisciplinaById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const [disciplina] = await db.select().from(disciplinas).where(eq(disciplinas.id, id));
+  
+  if (!disciplina) return null;
+  
+  // Buscar cursos associados
+  const cursosAssociados = await db
+    .select({ cursoId: cursosDisciplinas.cursoId })
+    .from(cursosDisciplinas)
+    .where(eq(cursosDisciplinas.disciplinaId, id));
+  
+  return {
+    ...disciplina,
+    cursoIds: cursosAssociados.map(c => c.cursoId),
+  };
+}

@@ -18,6 +18,12 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import VideoaulasAdmin from "./pages/admin/VideoaulasAdmin";
 import NovaVideoaula from "./pages/admin/NovaVideoaula";
 import EditarVideoaula from "./pages/admin/EditarVideoaula";
+import ProfessoresAdmin from "./pages/admin/ProfessoresAdmin";
+import NovoProfessor from "./pages/admin/NovoProfessor";
+import EditarProfessor from "./pages/admin/EditarProfessor";
+import DisciplinasAdmin from "./pages/admin/DisciplinasAdmin";
+import NovaDisciplina from "./pages/admin/NovaDisciplina";
+import EditarDisciplina from "./pages/admin/EditarDisciplina";
 
 function Router() {
   return (
@@ -35,7 +41,13 @@ function Router() {
       <Route path={"/admin"} component={AdminDashboard} />
       <Route path={"/admin/videoaulas"} component={VideoaulasAdmin} />
       <Route path={"/admin/videoaulas/nova"} component={NovaVideoaula} />
-      <Route path={"/admin/videoaulas/:id/editar"} component={EditarVideoaula} />
+      <Route path="/admin/videoaulas/:id/editar" component={EditarVideoaula} />
+      <Route path="/admin/professores" component={ProfessoresAdmin} />
+      <Route path="/admin/professores/novo" component={NovoProfessor} />
+      <Route path="/admin/professores/:id/editar" component={EditarProfessor} />
+      <Route path="/admin/disciplinas" component={DisciplinasAdmin} />
+      <Route path="/admin/disciplinas/nova" component={NovaDisciplina} />
+      <Route path="/admin/disciplinas/:id/editar" component={EditarDisciplina} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
