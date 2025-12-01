@@ -15,6 +15,8 @@ import DesignersInstrucionais from "./pages/DesignersInstrucionais";
 import Estatisticas from "./pages/Estatisticas";
 import Visualizacoes from "./pages/Visualizacoes";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import VideoaulasAdmin from "./pages/admin/VideoaulasAdmin";
+import NovaVideoaula from "./pages/admin/NovaVideoaula";
 
 function Router() {
   return (
@@ -30,6 +32,8 @@ function Router() {
       <Route path={"/estatisticas"} component={Estatisticas} />
       <Route path={"/visualizacoes"} component={Visualizacoes} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/admin/videoaulas"} component={VideoaulasAdmin} />
+      <Route path={"/admin/videoaulas/nova"} component={NovaVideoaula} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, adminProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import {
   getAllCursos,
@@ -17,6 +17,10 @@ import {
   getVideoaulaById,
   getDisciplinasComCurso,
   getEstatisticasGerais,
+  createVideoaula,
+  updateVideoaula,
+  deleteVideoaula,
+  getOrCreateOfertaDisciplina,
 } from "./db";
 
 export const appRouter = router({
@@ -283,6 +287,95 @@ export const appRouter = router({
           v.videoaula.ccLegenda
         ).length,
       };
+    }),
+  }),
+
+  // ============================================
+  // ADMIN ROUTERS
+  // ============================================
+  admin: router({
+    videoaulas: router({
+      create: adminProcedure
+        .input(z.object({
+          disciplinaId: z.number(),
+          ano: z.number(),
+          bimestreOperacional: z.number(),
+          professorId: z.number().optional(),
+          diId: z.number().optional(),
+          semana: z.number(),
+          numeroAula: z.number(),
+          titulo: z.string(),
+          sinopse: z.string().optional(),
+          linkYoutubeOriginal: z.string().optional(),
+          slidesDisponivel: z.boolean().default(false),
+          status: z.string().optional(),
+          idTvCultura: z.string().optional(),
+          duracaoMinutos: z.number().optional(),
+          linkLibras: z.string().optional(),
+          linkAudiodescricao: z.string().optional(),
+          ccLegenda: z.boolean().default(false),
+          linkDownload: z.string().optional(),
+        }))
+        .mutation(async ({ input }) => {
+          // Criar ou obter oferta da disciplina
+          const ofertaId = await getOrCreateOfertaDisciplina(
+            input.disciplinaId,
+            input.ano,
+            input.bimestreOperacional,
+            input.professorId,
+            input.diId
+          );
+          
+          // Criar videoaula
+          const videoaulaId = await createVideoaula({
+            ofertaDisciplinaId: ofertaId,
+            semana: input.semana,
+            numeroAula: input.numeroAula,
+            titulo: input.titulo,
+            sinopse: input.sinopse || null,
+            linkYoutubeOriginal: input.linkYoutubeOriginal || null,
+            slidesDisponivel: input.slidesDisponivel,
+            status: input.status || null,
+            idTvCultura: input.idTvCultura || null,
+            duracaoMinutos: input.duracaoMinutos || null,
+            linkLibras: input.linkLibras || null,
+            linkAudiodescricao: input.linkAudiodescricao || null,
+            ccLegenda: input.ccLegenda,
+            linkDownload: input.linkDownload || null,
+          });
+          
+          return { id: videoaulaId, success: true };
+        }),
+      
+      update: adminProcedure
+        .input(z.object({
+          id: z.number(),
+          semana: z.number().optional(),
+          numeroAula: z.number().optional(),
+          titulo: z.string().optional(),
+          sinopse: z.string().optional(),
+          linkYoutubeOriginal: z.string().optional(),
+          slidesDisponivel: z.boolean().optional(),
+          status: z.string().optional(),
+          idTvCultura: z.string().optional(),
+          duracaoMinutos: z.number().optional(),
+          linkLibras: z.string().optional(),
+          linkAudiodescricao: z.string().optional(),
+          ccLegenda: z.boolean().optional(),
+          linkDownload: z.string().optional(),
+        }))
+        .mutation(async ({ input }) => {
+          const { id, ...data } = input;
+          await updateVideoaula(id, data);
+          return { success: true };
+        }),
+      
+      delete: adminProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          await deleteVideoaula(input.id);
+          return { success: true };
+        }),
     }),
   }),
 });

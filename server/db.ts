@@ -409,3 +409,75 @@ export async function getEstatisticasGerais() {
     comSlides: comSlides?.count || 0,
   };
 }
+
+// ============================================
+// VIDEOAULAS CRUD
+// ============================================
+
+export async function createVideoaula(data: InsertVideoaula) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const [result] = await db.insert(videoaulas).values(data);
+  return result.insertId;
+}
+
+export async function updateVideoaula(id: number, data: Partial<InsertVideoaula>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(videoaulas).set(data).where(eq(videoaulas.id, id));
+  return true;
+}
+
+export async function deleteVideoaula(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(videoaulas).where(eq(videoaulas.id, id));
+  return true;
+}
+
+// ============================================
+// OFERTAS DISCIPLINAS CRUD (necessário para criar videoaulas)
+// ============================================
+
+export async function getOrCreateOfertaDisciplina(
+  disciplinaId: number,
+  ano: number,
+  bimestreOperacional: number,
+  professorId?: number,
+  diId?: number
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Buscar oferta existente
+  const [existing] = await db
+    .select()
+    .from(ofertasDisciplinas)
+    .where(
+      and(
+        eq(ofertasDisciplinas.disciplinaId, disciplinaId),
+        eq(ofertasDisciplinas.ano, ano),
+        eq(ofertasDisciplinas.bimestreOperacional, bimestreOperacional)
+      )
+    )
+    .limit(1);
+  
+  if (existing) {
+    return existing.id;
+  }
+  
+  // Criar nova oferta
+  const [result] = await db.insert(ofertasDisciplinas).values({
+    disciplinaId,
+    ano,
+    bimestreOperacional,
+    professorId: professorId || null,
+    diId: diId || null,
+    tipo: "OFERTA",
+  });
+  
+  return result.insertId;
+}

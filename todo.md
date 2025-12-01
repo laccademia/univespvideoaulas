@@ -267,12 +267,12 @@
 - [x] Adicionar menu de navegação com seções: Videoaulas, Disciplinas, Cursos, Professores, Designers
 
 ### CRUD de Videoaulas
-- [ ] Criar página de listagem de videoaulas (/admin/videoaulas)
-- [ ] Criar formulário de criação de videoaula
+- [x] Criar página de listagem de videoaulas (/admin/videoaulas)
+- [x] Criar formulário de criação de videoaula
 - [ ] Criar formulário de edição de videoaula
-- [ ] Implementar exclusão de videoaula com confirmação
-- [ ] Adicionar procedures no backend: createVideoaula, updateVideoaula, deleteVideoaula
-- [ ] Validar campos obrigatórios e formatos
+- [x] Implementar exclusão de videoaula com confirmação (AlertDialog)
+- [x] Adicionar procedures no backend: createVideoaula, updateVideoaula, deleteVideoaula
+- [x] Validar campos obrigatórios e formatos
 
 ### CRUD de Disciplinas
 - [ ] Criar página de listagem de disciplinas (/admin/disciplinas)
