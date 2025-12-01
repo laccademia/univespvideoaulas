@@ -68,7 +68,8 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
               );
             })}
-            {user?.role === "admin" && (
+            {/* Mostrar Admin em desenvolvimento ou se for admin */}
+            {(import.meta.env.DEV || user?.role === "admin") && (
               <Link href="/admin">
                 <Button
                   variant={isActive("/admin") ? "default" : "outline"}
@@ -134,6 +135,19 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 );
               })}
+              {/* Link Admin no mobile */}
+              {(import.meta.env.DEV || user?.role === "admin") && (
+                <Link href="/admin">
+                  <Button
+                    variant={isActive("/admin") ? "default" : "outline"}
+                    className="w-full justify-start gap-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
             </nav>
           </div>
         )}
