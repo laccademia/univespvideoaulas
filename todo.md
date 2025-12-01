@@ -240,3 +240,10 @@
 - [x] Criar gráfico de barras empilhadas: Videoaulas por ano e bimestre
 - [x] Adicionar página de Visualizações no menu de navegação
 - [x] Testar interatividade e responsividade dos gráficos
+
+## 🎨 Ajustar Cores e Visibilidade dos Gráficos
+
+- [x] Ajustar cores dos gráficos para melhor contraste com tema escuro
+- [x] Melhorar visibilidade das labels e legendas
+- [x] Garantir que texto seja legível em ambos os temas (claro e escuro)
+- [x] Validar contraste em todos os gráficos

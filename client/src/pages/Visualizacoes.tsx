@@ -17,16 +17,19 @@ import {
   Cell,
 } from "recharts";
 import { useMemo } from "react";
+import Layout from "@/components/Layout";
 
+// Cores vibrantes e com bom contraste
 const COLORS = {
-  primary: "hsl(var(--primary))",
-  secondary: "hsl(var(--secondary))",
-  accent: "hsl(var(--accent))",
-  muted: "hsl(var(--muted))",
+  bar1: "#3b82f6", // Azul vibrante
+  bar2: "#10b981", // Verde
+  bar3: "#f59e0b", // Laranja
+  bar4: "#ef4444", // Vermelho
   libras: "#3b82f6",
   audiodescricao: "#10b981",
   cc: "#f59e0b",
-  semAcessibilidade: "#6b7280",
+  semAcessibilidade: "#64748b",
+  line: "#8b5cf6", // Roxo
 };
 
 export default function Visualizacoes() {
@@ -111,236 +114,280 @@ export default function Visualizacoes() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
     );
   }
 
   if (!chartsData) {
     return (
-      <div className="container py-8">
-        <p className="text-center text-muted-foreground">Nenhum dado disponível para visualização.</p>
-      </div>
+      <Layout>
+        <div className="container py-8">
+          <p className="text-center text-muted-foreground">Nenhum dado disponível para visualização.</p>
+        </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="container py-8 space-y-8">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Visualizações e Análises</h1>
-        <p className="text-muted-foreground">
-          Gráficos interativos para análise da distribuição e cobertura de videoaulas.
-        </p>
+    <Layout>
+      <div className="container py-8 space-y-8">
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold tracking-tight">Visualizações e Análises</h1>
+          <p className="text-muted-foreground">
+            Gráficos interativos para análise da distribuição e cobertura de videoaulas.
+          </p>
+        </div>
+
+        {/* Estatísticas Rápidas */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total de Videoaulas</CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{chartsData.totalVideoaulas}</div>
+              <p className="text-xs text-muted-foreground">
+                Distribuídas em {chartsData.distribuicaoPorAno.length} anos
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Com Libras</CardTitle>
+              <PieChart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {chartsData.coberturaAcessibilidade[0].value}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {((chartsData.coberturaAcessibilidade[0].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Com Audiodescrição</CardTitle>
+              <PieChart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {chartsData.coberturaAcessibilidade[1].value}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {((chartsData.coberturaAcessibilidade[1].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Com Legendas (CC)</CardTitle>
+              <PieChart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {chartsData.coberturaAcessibilidade[2].value}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {((chartsData.coberturaAcessibilidade[2].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Gráficos */}
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Distribuição por Ano */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Distribuição por Ano
+              </CardTitle>
+              <CardDescription>
+                Quantidade de videoaulas produzidas por ano
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartsData.distribuicaoPorAno}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                  <XAxis 
+                    dataKey="ano" 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--foreground))",
+                    }}
+                    labelStyle={{ color: "hsl(var(--foreground))" }}
+                  />
+                  <Legend wrapperStyle={{ color: "hsl(var(--foreground))" }} />
+                  <Bar 
+                    dataKey="total" 
+                    name="Videoaulas" 
+                    fill={COLORS.bar1} 
+                    radius={[8, 8, 0, 0]}
+                    label={{ position: 'top', fill: 'hsl(var(--foreground))' }}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Cobertura de Acessibilidade */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PieChart className="h-5 w-5" />
+                Cobertura de Acessibilidade
+              </CardTitle>
+              <CardDescription>
+                Distribuição de recursos de acessibilidade
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsPie>
+                  <Pie
+                    data={chartsData.coberturaAcessibilidade}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={(entry) => {
+                      const percent = ((entry.value / chartsData.totalVideoaulas) * 100).toFixed(0);
+                      return `${entry.name}: ${entry.value} (${percent}%)`;
+                    }}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {chartsData.coberturaAcessibilidade.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--foreground))",
+                    }}
+                  />
+                </RechartsPie>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Evolução Temporal */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Evolução Temporal
+              </CardTitle>
+              <CardDescription>
+                Crescimento acumulado de videoaulas ao longo dos anos
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartsData.evolucaoTemporal}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                  <XAxis 
+                    dataKey="ano" 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--foreground))",
+                    }}
+                    labelStyle={{ color: "hsl(var(--foreground))" }}
+                  />
+                  <Legend wrapperStyle={{ color: "hsl(var(--foreground))" }} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="acumulado" 
+                    name="Total Acumulado" 
+                    stroke={COLORS.line} 
+                    strokeWidth={3}
+                    dot={{ fill: COLORS.line, r: 5, strokeWidth: 2, stroke: "hsl(var(--background))" }}
+                    activeDot={{ r: 7 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Distribuição por Ano e Bimestre */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Distribuição por Ano e Bimestre
+              </CardTitle>
+              <CardDescription>
+                Videoaulas organizadas por bimestre operacional
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartsData.distribuicaoPorAnoBimestre}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                  <XAxis 
+                    dataKey="ano" 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <YAxis 
+                    tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--foreground))"
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "8px",
+                      color: "hsl(var(--foreground))",
+                    }}
+                    labelStyle={{ color: "hsl(var(--foreground))" }}
+                  />
+                  <Legend wrapperStyle={{ color: "hsl(var(--foreground))" }} />
+                  <Bar dataKey="Bimestre 1" stackId="a" fill={COLORS.bar1} />
+                  <Bar dataKey="Bimestre 2" stackId="a" fill={COLORS.bar2} />
+                  <Bar dataKey="Bimestre 3" stackId="a" fill={COLORS.bar3} />
+                  <Bar dataKey="Bimestre 4" stackId="a" fill={COLORS.bar4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      {/* Estatísticas Rápidas */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Videoaulas</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{chartsData.totalVideoaulas}</div>
-            <p className="text-xs text-muted-foreground">
-              Distribuídas em {chartsData.distribuicaoPorAno.length} anos
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Com Libras</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {chartsData.coberturaAcessibilidade[0].value}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {((chartsData.coberturaAcessibilidade[0].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Com Audiodescrição</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {chartsData.coberturaAcessibilidade[1].value}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {((chartsData.coberturaAcessibilidade[1].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Com Legendas (CC)</CardTitle>
-            <PieChart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {chartsData.coberturaAcessibilidade[2].value}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {((chartsData.coberturaAcessibilidade[2].value / chartsData.totalVideoaulas) * 100).toFixed(1)}% do total
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Gráficos */}
-      <div className="grid gap-8 md:grid-cols-2">
-        {/* Distribuição por Ano */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Distribuição por Ano
-            </CardTitle>
-            <CardDescription>
-              Quantidade de videoaulas produzidas por ano
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartsData.distribuicaoPorAno}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="ano" className="text-sm" />
-                <YAxis className="text-sm" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--background))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="total" name="Videoaulas" fill={COLORS.primary} radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Cobertura de Acessibilidade */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PieChart className="h-5 w-5" />
-              Cobertura de Acessibilidade
-            </CardTitle>
-            <CardDescription>
-              Distribuição de recursos de acessibilidade
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsPie>
-                <Pie
-                  data={chartsData.coberturaAcessibilidade}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={(entry) => `${entry.name}: ${entry.value}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {chartsData.coberturaAcessibilidade.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--background))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-              </RechartsPie>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Evolução Temporal */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Evolução Temporal
-            </CardTitle>
-            <CardDescription>
-              Crescimento acumulado de videoaulas ao longo dos anos
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartsData.evolucaoTemporal}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="ano" className="text-sm" />
-                <YAxis className="text-sm" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--background))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="acumulado" 
-                  name="Total Acumulado" 
-                  stroke={COLORS.primary} 
-                  strokeWidth={2}
-                  dot={{ fill: COLORS.primary, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Distribuição por Ano e Bimestre */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Distribuição por Ano e Bimestre
-            </CardTitle>
-            <CardDescription>
-              Videoaulas organizadas por bimestre operacional
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={chartsData.distribuicaoPorAnoBimestre}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="ano" className="text-sm" />
-                <YAxis className="text-sm" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: "hsl(var(--background))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="Bimestre 1" stackId="a" fill="#3b82f6" />
-                <Bar dataKey="Bimestre 2" stackId="a" fill="#10b981" />
-                <Bar dataKey="Bimestre 3" stackId="a" fill="#f59e0b" />
-                <Bar dataKey="Bimestre 4" stackId="a" fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    </Layout>
   );
 }
