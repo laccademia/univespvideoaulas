@@ -1,16 +1,11 @@
-import Layout from "@/components/Layout";
+import AdminLayout from "@/components/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Video, BookOpen, GraduationCap, Users, Palette, TrendingUp, Upload, History, FileText, Home } from "lucide-react";
+import { Video, BookOpen, GraduationCap, Users, Palette, TrendingUp, Upload, History, FileText } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
 
 export default function AdminDashboard() {
   const { data: stats } = trpc.stats.overview.useQuery();
-
-  const handleBackToHome = () => {
-    window.location.href = '/';
-  };
 
   const quickActions = [
     {
@@ -71,25 +66,13 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <Layout>
-      <div className="space-y-8 py-8">
-        <div className="container">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2 text-white">Painel Administrativo</h1>
-              <p className="text-gray-400">
-                Gerencie videoaulas, disciplinas, cursos e equipe do sistema.
-              </p>
-            </div>
-            <Button
-              onClick={handleBackToHome}
-              variant="outline"
-              style={{ borderColor: '#00C2FF', color: '#00C2FF' }}
-            >
-              <Home className="h-4 w-4 mr-2" />
-              Voltar para Home
-            </Button>
-          </div>
+    <AdminLayout>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-white">Dashboard</h1>
+          <p className="text-gray-400">
+            Visão geral do sistema de videoaulas
+          </p>
         </div>
 
         {/* Estatísticas */}
@@ -292,6 +275,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 }

@@ -679,3 +679,13 @@
 - [x] Testar proteção do owner (não pode ser modificado)
 - [x] Testar navegação entre admin e home
 - [x] Salvar checkpoint final
+
+
+## 🔧 Restaurar Sidebar Administrativa
+- [x] Criar componente AdminLayout com sidebar lateral
+- [x] Adicionar navegação administrativa na sidebar
+- [x] Adicionar botão "Voltar para Home" no header
+- [x] Corrigir proteção do owner em GerenciarUsuarios.tsx
+- [x] Atualizar AdminDashboard para usar AdminLayout
+- [x] Corrigir nested anchor tags no AdminLayout
+- [x] Testar navegação e salvar checkpoint

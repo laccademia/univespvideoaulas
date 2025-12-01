@@ -10,7 +10,9 @@ import {
   Palette,
   LogOut,
   Home,
-  Shield
+  Shield,
+  Upload,
+  History
 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -38,25 +40,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const menuItems = [
-    { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/admin/videoaulas", icon: Video, label: "Videoaulas" },
-    { href: "/admin/disciplinas", icon: BookOpen, label: "Disciplinas" },
-    { href: "/admin/cursos", icon: GraduationCap, label: "Cursos" },
-    { href: "/admin/professores", icon: Users, label: "Professores" },
-    { href: "/admin/designers", icon: Palette, label: "Designers" },
+    { href: "/admin", icon: LayoutDashboard, label: "Dashboard", color: "#00C2FF" },
+    { href: "/admin/videoaulas", icon: Video, label: "Videoaulas", color: "#00C2FF" },
+    { href: "/admin/disciplinas", icon: BookOpen, label: "Disciplinas", color: "#9D00FF" },
+    { href: "/admin/cursos", icon: GraduationCap, label: "Cursos", color: "#00FF55" },
+    { href: "/admin/professores", icon: Users, label: "Professores", color: "#FF6A00" },
+    { href: "/admin/designers", icon: Palette, label: "Designers", color: "#FFE600" },
+    { href: "/admin/importar", icon: Upload, label: "Importar", color: "#FF00C7" },
+    { href: "/admin/importacoes/historico", icon: History, label: "Hist\u00f3rico", color: "#BFFF00" },
+    { href: "/admin/usuarios", icon: Users, label: "Usu\u00e1rios", color: "#FFE600" },
   ];
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen" style={{ backgroundColor: '#0A101F' }}>
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-card flex flex-col">
-        <div className="p-6 border-b">
+      <aside className="w-64 border-r flex flex-col" style={{ backgroundColor: '#141C2F', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="p-6 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
           <Link href="/admin">
             <div className="flex items-center gap-2 cursor-pointer">
-              <Shield className="h-6 w-6 text-primary" />
+              <Shield className="h-6 w-6" style={{ color: '#00C2FF' }} />
               <div>
-                <h2 className="font-bold text-lg">Admin Panel</h2>
-                <p className="text-xs text-muted-foreground">Sistema de Gestão</p>
+                <h2 className="font-bold text-lg text-white">Painel Admin</h2>
+                <p className="text-xs text-gray-400">Sistema Videoaulas</p>
               </div>
             </div>
           </Link>
@@ -70,32 +75,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             
             return (
               <Link key={item.href} href={item.href}>
-                <Button
-                  variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start gap-3"
+                <div
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: isActive ? 'rgba(0, 194, 255, 0.1)' : 'transparent',
+                    borderLeft: isActive ? `3px solid ${item.color}` : '3px solid transparent',
+                    color: isActive ? item.color : '#9CA3AF'
+                  }}
                 >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Button>
+                  <Icon className="h-5 w-5" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t space-y-2">
+        <div className="p-4 border-t space-y-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+          <div className="px-4 py-2 mb-2">
+            <p className="text-sm font-medium text-white">{user.name || 'Admin'}</p>
+            <p className="text-xs text-gray-400">{user.email || 'admin@univesp.br'}</p>
+          </div>
+          
           <Link href="/">
-            <Button variant="outline" className="w-full justify-start gap-3">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-3"
+              style={{ borderColor: '#00C2FF', color: '#00C2FF' }}
+            >
               <Home className="h-4 w-4" />
-              Voltar ao Site
+              Voltar para Home
             </Button>
           </Link>
-          
-          <div className="pt-2 border-t">
-            <div className="px-3 py-2">
-              <p className="text-sm font-medium">{user.name}</p>
-              <p className="text-xs text-muted-foreground">{user.email}</p>
-            </div>
-          </div>
         </div>
       </aside>
 

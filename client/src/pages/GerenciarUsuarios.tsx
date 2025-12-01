@@ -50,9 +50,9 @@ export default function GerenciarUsuarios() {
     });
   };
 
-  const getRoleBadge = (role: string, openId: string) => {
-    // Verifica se é owner (você)
-    const isOwner = openId === import.meta.env.VITE_OWNER_OPEN_ID;
+  const getRoleBadge = (role: string, userId: number) => {
+    // Verifica se é o primeiro usuário (owner)
+    const isOwner = userId === 1;
     
     if (isOwner) {
       return (
@@ -75,8 +75,9 @@ export default function GerenciarUsuarios() {
     );
   };
 
-  const isOwner = (openId: string) => {
-    return openId === import.meta.env.VITE_OWNER_OPEN_ID;
+  const isOwner = (userId: number) => {
+    // Owner é sempre o primeiro usuário (ID = 1)
+    return userId === 1;
   };
 
   return (
@@ -207,13 +208,13 @@ export default function GerenciarUsuarios() {
                             {user.email || 'N/A'}
                           </TableCell>
                           <TableCell>
-                            {getRoleBadge(user.role, user.openId)}
+                            {getRoleBadge(user.role, user.id)}
                           </TableCell>
                           <TableCell className="text-gray-400 text-sm">
                             {formatDate(user.createdAt)}
                           </TableCell>
                           <TableCell>
-                            {isOwner(user.openId) ? (
+                            {isOwner(user.id) ? (
                               <span className="text-xs text-gray-500">Protegido</span>
                             ) : (
                               <div className="flex gap-2">
