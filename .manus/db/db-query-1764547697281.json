@@ -1,0 +1,22 @@
+{
+  "query": "\nSELECT \n  od.ano,\n  COUNT(DISTINCT v.id) as total_videoaulas\nFROM videoaulas v\nLEFT JOIN ofertasDisciplinas od ON v.ofertaDisciplinaId = od.id\nGROUP BY od.ano\nORDER BY od.ano DESC;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4Q6CVQSvv4vsSx3.a0e54a3010e2 --database AgAQ7M7gXFHDiuyXgHyZLe --execute \nSELECT \n  od.ano,\n  COUNT(DISTINCT v.id) as total_videoaulas\nFROM videoaulas v\nLEFT JOIN ofertasDisciplinas od ON v.ofertaDisciplinaId = od.id\nGROUP BY od.ano\nORDER BY od.ano DESC;\n",
+  "rows": [
+    {
+      "ano": "2025",
+      "total_videoaulas": "458"
+    },
+    {
+      "ano": "2024",
+      "total_videoaulas": "647"
+    },
+    {
+      "ano": "2023",
+      "total_videoaulas": "782"
+    }
+  ],
+  "messages": [],
+  "stdout": "ano\ttotal_videoaulas\n2025\t458\n2024\t647\n2023\t782\n",
+  "stderr": "",
+  "execution_time_ms": 53
+}

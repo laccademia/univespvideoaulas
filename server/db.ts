@@ -336,7 +336,8 @@ export async function getVideoaulasComDetalhes() {
     .leftJoin(disciplinas, eq(ofertasDisciplinas.disciplinaId, disciplinas.id))
     .leftJoin(professores, eq(ofertasDisciplinas.professorId, professores.id))
     .leftJoin(designersInstrucionais, eq(ofertasDisciplinas.diId, designersInstrucionais.id))
-    .orderBy(desc(videoaulas.id));
+    .orderBy(desc(videoaulas.id))
+    .limit(10000); // Garantir que todas as videoaulas sejam retornadas
 }
 
 export async function getDisciplinasComCurso() {

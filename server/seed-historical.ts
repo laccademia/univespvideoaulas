@@ -14,7 +14,7 @@ import {
   getOfertaByDisciplinaAnoEBimestre,
 } from './db';
 
-const DATA_FILE = '/home/ubuntu/sistema-videoaulas-univesp/videoaulas_historical.json';
+const DATA_FILE = '/home/ubuntu/sistema-videoaulas-univesp/videoaulas_historical_final.json';
 
 async function seedHistoricalVideoaulas() {
   console.log('🎥 Populando videoaulas históricas (2023 e 2024)...');

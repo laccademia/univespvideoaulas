@@ -214,3 +214,12 @@
 - [x] Executar seed e popular banco de dados (224 videoaulas inseridas)
 - [x] Validar contagem total de videoaulas por ano (682 total: 458 de 2025 + 224 históricas)
 - [x] Testar dashboard com filtros de ano (2023, 2024, 2025)
+
+## 🔍 Correção: Verificar e Processar TODAS as Videoaulas 2024/2023
+
+- [x] Analisar estrutura completa da planilha Videoaulas 2024 (todas as abas)
+- [x] Verificar contagem real de videoaulas em cada aba
+- [x] Identificar por que apenas 224 de 1205 foram inseridas (problema: células mescladas não tratadas)
+- [x] Corrigir script de processamento para capturar todos os dados (forward fill aplicado)
+- [x] Reprocessar planilhas 2024 e 2023 completamente (1.205 videoaulas processadas)
+- [x] Validar contagem final contra planilhas originais (1.887 videoaulas totais no sistema)
