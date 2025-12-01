@@ -4,8 +4,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, adminProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getDb } from "./db";
-import { disciplinas, videoaulas, ofertasDisciplinas, cursosDisciplinas } from "../drizzle/schema";
-import { eq, and } from "drizzle-orm";
+import { disciplinas, videoaulas, ofertasDisciplinas, cursosDisciplinas, historicoImportacoes, users } from "../drizzle/schema";
+import { eq, and, desc } from "drizzle-orm";
 import {
   getAllCursos,
   getCursoById,
@@ -649,6 +649,56 @@ export const appRouter = router({
           }
           
           return results;
+        }),
+    }),
+    
+    historico: router({
+      salvar: adminProcedure
+        .input(z.object({
+          tipo: z.enum(["acessibilidade", "disciplinas", "videoaulas"]),
+          nomeArquivo: z.string(),
+          totalLinhas: z.number(),
+          sucessos: z.number(),
+          erros: z.number(),
+        }))
+        .mutation(async ({ input, ctx }) => {
+          const db = await getDb();
+          if (!db) throw new Error('Database not available');
+          
+          await db.insert(historicoImportacoes).values({
+            tipo: input.tipo,
+            nomeArquivo: input.nomeArquivo,
+            usuarioId: ctx.user.id,
+            totalLinhas: input.totalLinhas,
+            sucessos: input.sucessos,
+            erros: input.erros,
+          });
+          
+          return { success: true };
+        }),
+      
+      listar: adminProcedure
+        .query(async ({ ctx }) => {
+          const db = await getDb();
+          if (!db) throw new Error('Database not available');
+          
+          const historico = await db
+            .select({
+              id: historicoImportacoes.id,
+              tipo: historicoImportacoes.tipo,
+              nomeArquivo: historicoImportacoes.nomeArquivo,
+              usuarioId: historicoImportacoes.usuarioId,
+              usuarioNome: users.name,
+              totalLinhas: historicoImportacoes.totalLinhas,
+              sucessos: historicoImportacoes.sucessos,
+              erros: historicoImportacoes.erros,
+              createdAt: historicoImportacoes.createdAt,
+            })
+            .from(historicoImportacoes)
+            .leftJoin(users, eq(historicoImportacoes.usuarioId, users.id))
+            .orderBy(desc(historicoImportacoes.createdAt));
+          
+          return historico;
         }),
     }),
   }),

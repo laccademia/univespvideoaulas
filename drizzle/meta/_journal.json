@@ -22,6 +22,13 @@
       "when": 1764541054134,
       "tag": "0002_cold_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1764609659908,
+      "tag": "0003_overjoyed_king_cobra",
+      "breakpoints": true
     }
   ]
 }

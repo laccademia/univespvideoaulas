@@ -516,3 +516,32 @@
 - [x] Testar importação de videoaulas
 - [x] Testar atualização de links de acessibilidade
 - [x] Salvar checkpoint
+
+
+## 📋 Histórico de Importações
+
+### Schema - Tabela de Histórico
+- [x] Criar tabela `historicoImportacoes` no schema
+- [x] Campos: id, tipo, nomeArquivo, usuarioId, totalLinhas, sucessos, erros, createdAt
+- [x] Executar db:push para aplicar mudanças
+
+### Backend - Procedures
+- [x] Criar procedure para salvar importação no histórico
+- [x] Criar procedure para listar histórico (com paginação)
+- [x] Criar procedure para obter detalhes de uma importação
+
+### Frontend - Atualização da Importação
+- [x] Integrar salvamento no histórico após importação
+- [x] Passar informações do usuário logado
+
+### Frontend - Página de Histórico
+- [x] Criar página /admin/importacoes/historico
+- [x] Listar importações com data, tipo, arquivo, usuário, status
+- [x] Adicionar filtros (tipo, data, usuário)
+- [x] Mostrar estatísticas (total, sucessos, erros)
+- [ ] Adicionar link no menu Admin
+
+### Testes
+- [x] Testar registro de importação
+- [x] Testar listagem de histórico
+- [x] Salvar checkpoint

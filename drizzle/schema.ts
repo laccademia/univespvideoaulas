@@ -135,6 +135,23 @@ export type Videoaula = typeof videoaulas.$inferSelect;
 export type InsertVideoaula = typeof videoaulas.$inferInsert;
 
 /**
+ * Tabela de histórico de importações
+ */
+export const historicoImportacoes = mysqlTable("historicoImportacoes", {
+  id: int("id").autoincrement().primaryKey(),
+  tipo: mysqlEnum("tipo", ["acessibilidade", "disciplinas", "videoaulas"]).notNull(),
+  nomeArquivo: varchar("nomeArquivo", { length: 255 }).notNull(),
+  usuarioId: int("usuarioId").notNull(),
+  totalLinhas: int("totalLinhas").notNull(),
+  sucessos: int("sucessos").notNull(),
+  erros: int("erros").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type HistoricoImportacao = typeof historicoImportacoes.$inferSelect;
+export type InsertHistoricoImportacao = typeof historicoImportacoes.$inferInsert;
+
+/**
  * Relações entre tabelas
  */
 export const cursosRelations = relations(cursos, ({ many }) => ({

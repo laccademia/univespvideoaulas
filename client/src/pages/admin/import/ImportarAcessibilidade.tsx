@@ -29,6 +29,7 @@ export default function ImportarAcessibilidade() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const importMutation = trpc.admin.import.linksAcessibilidade.useMutation();
+  const salvarHistoricoMutation = trpc.admin.historico.salvar.useMutation();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -40,6 +41,7 @@ export default function ImportarAcessibilidade() {
     }
 
     setFile(selectedFile);
+    setPreviewData([]);
     setImportResults([]);
 
     // Parse CSV para preview
@@ -74,6 +76,15 @@ export default function ImportarAcessibilidade() {
       
       const successCount = results.filter(r => r.status === 'success').length;
       const errorCount = results.filter(r => r.status === 'error').length;
+      
+      // Salvar no histórico
+      await salvarHistoricoMutation.mutateAsync({
+        tipo: 'acessibilidade',
+        nomeArquivo: file?.name || 'arquivo.csv',
+        totalLinhas: previewData.length,
+        sucessos: successCount,
+        erros: errorCount,
+      });
       
       if (errorCount === 0) {
         toast.success(`${successCount} videoaulas atualizadas com sucesso!`);
