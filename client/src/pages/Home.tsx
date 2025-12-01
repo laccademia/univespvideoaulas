@@ -3,7 +3,51 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { Video, BookOpen, GraduationCap, Users, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, TooltipProps } from 'recharts';
+
+// Componente de Tooltip Customizado para Gráfico de Barras
+const CustomBarTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div 
+        className="rounded-lg p-3 shadow-lg border transition-all"
+        style={{ 
+          backgroundColor: '#141C2F',
+          borderColor: '#00C2FF',
+          borderWidth: '2px'
+        }}
+      >
+        <p className="text-white font-semibold mb-1">{payload[0].payload.nome}</p>
+        <p className="text-sm" style={{ color: '#00C2FF' }}>
+          <span className="font-bold text-lg">{payload[0].value}</span> videoaulas
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+// Componente de Tooltip Customizado para Gráfico de Área
+const CustomAreaTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div 
+        className="rounded-lg p-3 shadow-lg border transition-all"
+        style={{ 
+          backgroundColor: '#141C2F',
+          borderColor: '#9D00FF',
+          borderWidth: '2px'
+        }}
+      >
+        <p className="text-white font-semibold mb-1">Ano {payload[0].payload.ano}</p>
+        <p className="text-sm" style={{ color: '#9D00FF' }}>
+          <span className="font-bold text-lg">{payload[0].value}</span> videoaulas
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function Home() {
   const { data: stats, isLoading } = trpc.stats.overview.useQuery();
@@ -157,14 +201,9 @@ export default function Home() {
                         tick={{ fill: '#E0E0E0' }}
                         width={110}
                       />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#141C2F',
-                          border: '1px solid rgba(255,255,255,0.2)',
-                          borderRadius: '8px',
-                          color: '#FFFFFF'
-                        }}
-                        cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                      <Tooltip 
+                        content={<CustomBarTooltip />}
+                        cursor={{ fill: 'rgba(0,194,255,0.1)' }}
                       />
                       <Bar 
                         dataKey="total" 
@@ -219,13 +258,9 @@ export default function Home() {
                         style={{ fontSize: '12px' }}
                         tick={{ fill: '#E0E0E0' }}
                       />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: '#141C2F',
-                          border: '1px solid rgba(255,255,255,0.2)',
-                          borderRadius: '8px',
-                          color: '#FFFFFF'
-                        }}
+                      <Tooltip 
+                        content={<CustomAreaTooltip />}
+                        cursor={{ stroke: '#00C2FF', strokeWidth: 2 }}
                       />
                       <Area
                         type="monotone"
@@ -233,6 +268,7 @@ export default function Home() {
                         stroke="#00C2FF"
                         strokeWidth={3}
                         fill="url(#colorGradient)"
+                        activeDot={{ r: 8, fill: '#00C2FF', stroke: '#FFFFFF', strokeWidth: 2 }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
