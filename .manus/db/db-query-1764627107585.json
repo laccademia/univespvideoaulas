@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO users (openId, email, name, role, loginMethod, password_hash) VALUES ('6eb3c0bf-6e15-4e39-89ff-b6128a818f85', 'admin@univesp.br', 'Administrador', 'admin', 'email', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4Q6CVQSvv4vsSx3.a0e54a3010e2 --database AgAQ7M7gXFHDiuyXgHyZLe --execute INSERT INTO users (openId, email, name, role, loginMethod, password_hash) VALUES ('6eb3c0bf-6e15-4e39-89ff-b6128a818f85', 'admin@univesp.br', 'Administrador', 'admin', 'email', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 67
+}

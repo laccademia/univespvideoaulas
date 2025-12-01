@@ -1,0 +1,22 @@
+{
+  "query": "SELECT * FROM users WHERE email = 'admin@univesp.br';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4Q6CVQSvv4vsSx3.a0e54a3010e2 --database AgAQ7M7gXFHDiuyXgHyZLe --execute SELECT * FROM users WHERE email = 'admin@univesp.br';",
+  "rows": [
+    {
+      "id": "1110001",
+      "openId": "6eb3c0bf-6e15-4e39-89ff-b6128a818f85",
+      "name": "Administrador",
+      "email": "admin@univesp.br",
+      "loginMethod": "email",
+      "role": "admin",
+      "createdAt": "2025-12-01 22:11:47",
+      "updatedAt": "2025-12-01 22:11:47",
+      "lastSignedIn": "2025-12-01 22:11:47",
+      "password_hash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\topenId\tname\temail\tloginMethod\trole\tcreatedAt\tupdatedAt\tlastSignedIn\tpassword_hash\n1110001\t6eb3c0bf-6e15-4e39-89ff-b6128a818f85\tAdministrador\tadmin@univesp.br\temail\tadmin\t2025-12-01 22:11:47\t2025-12-01 22:11:47\t2025-12-01 22:11:47\t8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

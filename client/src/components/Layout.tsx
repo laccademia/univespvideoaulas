@@ -83,6 +83,34 @@ export default function Layout({ children }: LayoutProps) {
             )}
           </nav>
 
+          {/* Auth Button */}
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  localStorage.removeItem('supabase_session');
+                  localStorage.removeItem('supabase_user');
+                  window.location.href = '/';
+                }}
+                className="gap-2"
+              >
+                <span className="text-sm">{user.name || user.email}</span>
+              </Button>
+            ) : (
+              <Link href="/login">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 hover:neon-border-cyan"
+                >
+                  Login
+                </Button>
+              </Link>
+            )}
+          </div>
+
           {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center gap-2">
             <Button
@@ -148,6 +176,33 @@ export default function Layout({ children }: LayoutProps) {
                   </Button>
                 </Link>
               )}
+              
+              {/* Login/Logout no mobile */}
+              <div className="pt-2 border-t">
+                {user ? (
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      localStorage.removeItem('supabase_session');
+                      localStorage.removeItem('supabase_user');
+                      window.location.href = '/';
+                    }}
+                  >
+                    <span className="text-sm">{user.name || user.email}</span>
+                  </Button>
+                ) : (
+                  <Link href="/login">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </nav>
           </div>
         )}

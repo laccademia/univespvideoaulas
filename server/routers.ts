@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, adminProcedure, router } from "./_core/trpc";
 import { ENV } from "./_core/env";
 import { z } from "zod";
+import * as SupabaseAuth from "./supabase-auth";
 import { getDb } from "./db";
 import { disciplinas, videoaulas, ofertasDisciplinas, cursosDisciplinas, historicoImportacoes, users } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -52,6 +53,7 @@ export const appRouter = router({
   system: systemRouter,
   
   auth: router({
+    // OAuth Manus (desenvolvimento)
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
@@ -59,6 +61,83 @@ export const appRouter = router({
       return {
         success: true,
       } as const;
+    }),
+
+    // Supabase Auth (produção)
+    supabase: router({
+      login: publicProcedure
+        .input(z.object({
+          email: z.string().email(),
+          password: z.string().min(6),
+        }))
+        .mutation(async ({ input }) => {
+          const { email, password } = input;
+          
+          console.log('[LOGIN] Tentando login para:', email);
+          
+          // Tentar login com credenciais do banco Manus primeiro
+          const db = await getDb();
+          if (db) {
+            console.log('[LOGIN] Buscando usuário no banco Manus...');
+            const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+            
+            console.log('[LOGIN] Usuário encontrado:', user ? 'SIM' : 'NÃO');
+            console.log('[LOGIN] Tem passwordHash:', user?.passwordHash ? 'SIM' : 'NÃO');
+            
+            if (user && user.passwordHash) {
+              // Verificar senha hash
+              const crypto = await import('crypto');
+              const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+              
+              console.log('[LOGIN] Hash calculado:', passwordHash);
+              console.log('[LOGIN] Hash armazenado:', user.passwordHash);
+              console.log('[LOGIN] Hashes iguais:', passwordHash === user.passwordHash);
+              
+              if (passwordHash === user.passwordHash) {
+                console.log('[LOGIN] Login bem-sucedido com credenciais do banco!');
+                return {
+                  user: {
+                    id: user.openId,
+                    email: user.email,
+                    name: user.name,
+                    role: user.role,
+                  },
+                  session: null,
+                };
+              } else {
+                console.log('[LOGIN] Senha incorreta!');
+              }
+            }
+          }
+          
+          console.log('[LOGIN] Tentando Supabase Auth...');
+          // Se não encontrou no banco ou senha incorreta, tentar Supabase Auth
+          const result = await SupabaseAuth.signInWithEmail(email, password);
+          return result;
+        }),
+
+      signup: publicProcedure
+        .input(z.object({
+          email: z.string().email(),
+          password: z.string().min(6),
+          name: z.string().optional(),
+        }))
+        .mutation(async ({ input }) => {
+          const result = await SupabaseAuth.signUp(input.email, input.password, input.name);
+          return result;
+        }),
+
+      signout: publicProcedure
+        .mutation(async () => {
+          await SupabaseAuth.signOut();
+          return { success: true };
+        }),
+
+      getUser: publicProcedure
+        .query(async () => {
+          const user = await SupabaseAuth.getCurrentUser();
+          return user;
+        }),
     }),
   }),
 
@@ -916,6 +995,38 @@ export const appRouter = router({
         cursosDisciplinas: cursosDisciplinasData,
         ofertasDisciplinas: ofertasData,
       };
+    }),
+
+    // Gerenciamento de usuários
+    usuarios: router({  
+      list: adminProcedure.query(async () => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
+        return allUsers;
+      }),
+
+      promoverParaAdmin: adminProcedure
+        .input(z.object({ userId: z.string() }))
+        .mutation(async ({ input }) => {
+          const db = await getDb();
+          if (!db) throw new Error('Database not available');
+          await db.update(users)
+            .set({ role: 'admin' })
+            .where(eq(users.openId, input.userId));
+          return { success: true };
+        }),
+
+      rebaixarParaUser: adminProcedure
+        .input(z.object({ userId: z.string() }))
+        .mutation(async ({ input }) => {
+          const db = await getDb();
+          if (!db) throw new Error('Database not available');
+          await db.update(users)
+            .set({ role: 'viewer' })
+            .where(eq(users.openId, input.userId));
+          return { success: true };
+        }),
     }),
   }),
 });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { supabase } from '../lib/supabase';
+import { trpc } from '../lib/trpc';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -15,6 +15,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  const loginMutation = trpc.auth.supabase.login.useMutation();
+  const signupMutation = trpc.auth.supabase.signup.useMutation();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -23,34 +26,33 @@ export default function Login() {
     try {
       if (isLogin) {
         // Login
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          setMessage('Login realizado com sucesso!');
-          setTimeout(() => setLocation('/'), 1000);
-        }
+        const result = await loginMutation.mutateAsync({ email, password });
+        
+        console.log('[LOGIN FRONTEND] Resultado:', result);
+        console.log('[LOGIN FRONTEND] User:', result.user);
+        console.log('[LOGIN FRONTEND] Role:', result.user?.role);
+        
+        // Salvar sessão no localStorage
+        localStorage.setItem('supabase_session', JSON.stringify(result.session));
+        localStorage.setItem('supabase_user', JSON.stringify(result.user));
+        
+        setMessage('Login realizado com sucesso!');
+        
+        // Redirecionar para admin se for admin, senão para home
+        setTimeout(() => {
+          console.log('[LOGIN FRONTEND] Redirecionando...');
+          if (result.user?.role === 'admin') {
+            console.log('[LOGIN FRONTEND] Redirecionando para /admin');
+            setLocation('/admin');
+          } else {
+            console.log('[LOGIN FRONTEND] Redirecionando para /');
+            setLocation('/');
+          }
+        }, 1000);
       } else {
         // Cadastro
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              name: name,
-            },
-          },
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          setMessage('Cadastro realizado! Verifique seu email para confirmar.');
-        }
+        await signupMutation.mutateAsync({ email, password, name });
+        setMessage('Cadastro realizado! Verifique seu email para confirmar.');
       }
     } catch (error: any) {
       setMessage(error.message || 'Erro ao processar solicitação');
@@ -90,6 +92,42 @@ export default function Login() {
         </CardHeader>
 
         <CardContent className="space-y-6 pb-8">
+          {/* Abas Login/Cadastro */}
+          <div className="flex gap-2 p-1 rounded-lg" style={{ backgroundColor: '#0A101F' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(true);
+                setMessage('');
+              }}
+              className="flex-1 py-3 px-4 rounded-md font-semibold transition-all"
+              style={{
+                backgroundColor: isLogin ? '#00C2FF' : 'transparent',
+                color: isLogin ? '#0A101F' : '#00C2FF',
+                border: isLogin ? 'none' : '1px solid #00C2FF33',
+              }}
+            >
+              <LogIn className="inline mr-2 h-4 w-4" />
+              Login
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(false);
+                setMessage('');
+              }}
+              className="flex-1 py-3 px-4 rounded-md font-semibold transition-all"
+              style={{
+                backgroundColor: !isLogin ? '#00C2FF' : 'transparent',
+                color: !isLogin ? '#0A101F' : '#00C2FF',
+                border: !isLogin ? 'none' : '1px solid #00C2FF33',
+              }}
+            >
+              <UserPlus className="inline mr-2 h-4 w-4" />
+              Cadastro
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div>
