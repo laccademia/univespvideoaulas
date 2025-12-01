@@ -238,20 +238,55 @@ export const appRouter = router({
     }),
     
     porCurso: publicProcedure.query(async () => {
-      // NOTA: Estatísticas por curso removidas temporariamente
-      // Disciplinas agora podem pertencer a múltiplos cursos (many-to-many)
-      // TODO: Implementar usando cursosDisciplinas
+      const videoaulas = await getVideoaulasComDetalhes();
       const cursos = await getAllCursos();
+      const disciplinasComCurso = await getDisciplinasComCurso();
       
-      return cursos.map(curso => {
+      // Mapear disciplina -> cursos
+      const disciplinaCursosMap = new Map<number, number[]>();
+      disciplinasComCurso.forEach(dc => {
+        disciplinaCursosMap.set(dc.disciplina.id, dc.cursos.map((c: any) => c.id));
+      });
+      
+      // Contar videoaulas por curso
+      const cursosStats = cursos.map(curso => {
+        const videoaulasDoCurso = videoaulas.filter(v => {
+          const disciplinaId = v.disciplina?.id;
+          if (!disciplinaId) return false;
+          const cursosDaDisciplina = disciplinaCursosMap.get(disciplinaId) || [];
+          return cursosDaDisciplina.includes(curso.id);
+        });
+        
         return {
           curso,
-          total: 0,
-          comLibras: 0,
-          comAudiodescricao: 0,
-          comCC: 0,
+          total: videoaulasDoCurso.length,
+          comLibras: videoaulasDoCurso.filter(v => v.videoaula.linkLibras).length,
+          comAudiodescricao: videoaulasDoCurso.filter(v => v.videoaula.linkAudiodescricao).length,
+          comCC: videoaulasDoCurso.filter(v => v.videoaula.ccLegenda).length,
         };
       });
+      
+      return cursosStats.filter(s => s.total > 0);
+    }),
+    
+    porAno: publicProcedure.query(async () => {
+      const videoaulas = await getVideoaulasComDetalhes();
+      
+      // Agrupar por ano
+      const anoMap = new Map<number, number>();
+      videoaulas.forEach(v => {
+        const ano = v.oferta?.ano;
+        if (ano) {
+          anoMap.set(ano, (anoMap.get(ano) || 0) + 1);
+        }
+      });
+      
+      // Converter para array e ordenar
+      const stats = Array.from(anoMap.entries())
+        .map(([ano, total]) => ({ ano, total }))
+        .sort((a, b) => a.ano - b.ano);
+      
+      return stats;
     }),
     
     porBimestre: publicProcedure.query(async () => {

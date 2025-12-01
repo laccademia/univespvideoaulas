@@ -434,3 +434,25 @@
 - [x] Validar visual profissional
 - [x] Testar responsividade
 - [x] Salvar checkpoint
+
+
+## 📊 Gráficos Interativos no Dashboard
+
+### Instalação e Setup
+- [x] Instalar biblioteca Recharts para gráficos
+- [x] Configurar componentes de gráficos
+
+### Backend - Queries para Gráficos
+- [x] Criar query para distribuição de videoaulas por curso
+- [x] Criar query para evolução temporal (videoaulas por ano)
+
+### Frontend - Implementação
+- [x] Adicionar gráfico de pizza (distribuição por curso)
+- [x] Adicionar gráfico de linhas (evolução temporal)
+- [x] Ajustar layout do dashboard para novos gráficos
+- [x] Aplicar tema neon nos gráficos
+
+### Testes
+- [x] Testar interatividade dos gráficos
+- [x] Validar responsividade
+- [x] Salvar checkpoint

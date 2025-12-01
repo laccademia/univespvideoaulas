@@ -1,13 +1,16 @@
 import Layout from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
-import { Video, BookOpen, GraduationCap, Users, Eye, Volume2, Subtitles, TrendingUp, Calendar, BarChart3 } from "lucide-react";
+import { Video, BookOpen, GraduationCap, Users, Eye, Volume2, Subtitles, TrendingUp, Calendar, BarChart3, PieChart as PieChartIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function Home() {
   const { data: stats, isLoading } = trpc.stats.overview.useQuery();
   const { data: acessibilidade } = trpc.stats.acessibilidade.useQuery();
   const { data: porBimestre } = trpc.stats.porBimestre.useQuery();
+  const { data: porCurso } = trpc.stats.porCurso.useQuery();
+  const { data: porAno } = trpc.stats.porAno.useQuery();
 
   return (
     <Layout>
@@ -84,8 +87,107 @@ export default function Home() {
           )}
 
           {/* Charts and Visualizations Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Gráfico de Pizza - Distribuição por Curso */}
+            <Card className="bg-card/50 backdrop-blur-sm neon-border-purple">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <PieChartIcon className="h-5 w-5 text-[var(--neon-purple)]" />
+                  Distribuição por Curso
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {porCurso && porCurso.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={porCurso.map(c => ({ name: c.curso.nome, value: c.total }))}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {porCurso.map((entry, index) => {
+                          const colors = [
+                            'var(--neon-cyan)',
+                            'var(--neon-purple)',
+                            'var(--neon-green)',
+                            'var(--neon-pink)',
+                            'var(--neon-blue)',
+                            '#00D9FF',
+                            '#B026FF',
+                            '#00FF94',
+                            '#FF2E97',
+                          ];
+                          return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                        })}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                          border: '1px solid var(--neon-cyan)',
+                          borderRadius: '8px',
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center text-muted-foreground py-8">Sem dados disponíveis</div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Gráfico de Linhas - Evolução Temporal */}
+            <Card className="bg-card/50 backdrop-blur-sm neon-border-green">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <TrendingUp className="h-5 w-5 text-[var(--neon-green)]" />
+                  Evolução Temporal
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {porAno && porAno.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={porAno}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                      <XAxis
+                        dataKey="ano"
+                        stroke="var(--neon-green)"
+                        style={{ fontSize: '12px' }}
+                      />
+                      <YAxis
+                        stroke="var(--neon-green)"
+                        style={{ fontSize: '12px' }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                          border: '1px solid var(--neon-green)',
+                          borderRadius: '8px',
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="total"
+                        stroke="var(--neon-green)"
+                        strokeWidth={3}
+                        dot={{ fill: 'var(--neon-green)', r: 5 }}
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center text-muted-foreground py-8">Sem dados disponíveis</div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Videoaulas por Bimestre */}
           <div className="grid grid-cols-1 gap-6 mb-8">
-            {/* Videoaulas por Bimestre */}
             <Card className="bg-card/50 backdrop-blur-sm neon-border-cyan">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
