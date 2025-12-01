@@ -10,22 +10,22 @@ export default function Home() {
   const { data: porCurso } = trpc.stats.porCurso.useQuery();
   const { data: porAno } = trpc.stats.porAno.useQuery();
 
-  // Mapeamento de cores específicas por curso usando variáveis CSS
-  const cursoColors: Record<string, string> = {
-    'Administração': 'var(--neon-cyan)',
-    'Ciência de Dados': 'var(--neon-purple)',
-    'Eng. Computação': 'var(--neon-green)',
-    'Tec. Informação': 'var(--neon-magenta)',
-    'Eng. Produção': 'var(--neon-orange)',
-    'Letras': 'var(--neon-yellow)',
-    'Matemática': 'var(--neon-lime)',
-    'Pedagogia': 'var(--neon-blue)',
-    'Processos Gerenciais': 'var(--neon-red)',
-  };
+  // Array de cores HEX sequencial para o gráfico de barras
+  const barColors = [
+    '#00C2FF', // 1. Administração (Ciano)
+    '#9D00FF', // 2. Ciência de Dados (Roxo)
+    '#00FF55', // 3. Eng. Computação (Verde)
+    '#FF00C7', // 4. Tec. Informação (Magenta)
+    '#FF6A00', // 5. Eng. Produção (Laranja)
+    '#FFE600', // 6. Letras (Amarelo)
+    '#BFFF00', // 7. Matemática (Verde Limão)
+    '#3399FF', // 8. Pedagogia (Azul Celeste)
+    '#FF3333'  // 9. Processos Gerenciais (Vermelho)
+  ];
 
   return (
     <Layout>
-      <div className="min-h-screen py-8" style={{ backgroundColor: 'var(--bg-dark)' }}>
+      <div className="min-h-screen py-8" style={{ backgroundColor: '#0A101F' }}>
         <div className="container">
           {/* Header Section */}
           <div className="mb-8">
@@ -37,7 +37,7 @@ export default function Home() {
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {[...Array(4)].map((_, i) => (
-                <Card key={i} style={{ backgroundColor: 'var(--bg-card)' }}>
+                <Card key={i} style={{ backgroundColor: '#141C2F' }}>
                   <CardHeader>
                     <Skeleton className="h-4 w-24 mb-2" />
                     <Skeleton className="h-8 w-16" />
@@ -50,72 +50,72 @@ export default function Home() {
               <Card 
                 className="transition-all duration-300 group hover:shadow-[0_0_20px_rgba(0,194,255,0.5)]" 
                 style={{ 
-                  backgroundColor: 'var(--bg-card)',
-                  border: '2px solid var(--neon-cyan)'
+                  backgroundColor: '#141C2F',
+                  border: '2px solid #00C2FF'
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-400">
                     Videoaulas
                   </CardTitle>
-                  <Video className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: 'var(--neon-cyan)' }} />
+                  <Video className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: '#00C2FF' }} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold" style={{ color: 'var(--neon-cyan)' }}>{stats?.totalVideoaulas || 0}</div>
+                  <div className="text-4xl font-bold" style={{ color: '#00C2FF' }}>{stats?.totalVideoaulas || 0}</div>
                 </CardContent>
               </Card>
 
               <Card 
                 className="transition-all duration-300 group hover:shadow-[0_0_20px_rgba(157,0,255,0.5)]" 
                 style={{ 
-                  backgroundColor: 'var(--bg-card)',
-                  border: '2px solid var(--neon-purple)'
+                  backgroundColor: '#141C2F',
+                  border: '2px solid #9D00FF'
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-400">
                     Disciplinas
                   </CardTitle>
-                  <BookOpen className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: 'var(--neon-purple)' }} />
+                  <BookOpen className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: '#9D00FF' }} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold" style={{ color: 'var(--neon-purple)' }}>{stats?.totalDisciplinas || 0}</div>
+                  <div className="text-4xl font-bold" style={{ color: '#9D00FF' }}>{stats?.totalDisciplinas || 0}</div>
                 </CardContent>
               </Card>
 
               <Card 
                 className="transition-all duration-300 group hover:shadow-[0_0_20px_rgba(0,255,85,0.5)]" 
                 style={{ 
-                  backgroundColor: 'var(--bg-card)',
-                  border: '2px solid var(--neon-green)'
+                  backgroundColor: '#141C2F',
+                  border: '2px solid #00FF55'
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-400">
                     Cursos
                   </CardTitle>
-                  <GraduationCap className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: 'var(--neon-green)' }} />
+                  <GraduationCap className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: '#00FF55' }} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold" style={{ color: 'var(--neon-green)' }}>{stats?.totalCursos || 0}</div>
+                  <div className="text-4xl font-bold" style={{ color: '#00FF55' }}>{stats?.totalCursos || 0}</div>
                 </CardContent>
               </Card>
 
               <Card 
                 className="transition-all duration-300 group hover:shadow-[0_0_20px_rgba(255,0,199,0.5)]" 
                 style={{ 
-                  backgroundColor: 'var(--bg-card)',
-                  border: '2px solid var(--neon-magenta)'
+                  backgroundColor: '#141C2F',
+                  border: '2px solid #FF00C7'
                 }}
               >
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                   <CardTitle className="text-sm font-medium text-gray-400">
                     Professores
                   </CardTitle>
-                  <Users className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: 'var(--neon-magenta)' }} />
+                  <Users className="h-5 w-5 group-hover:scale-110 transition-transform" style={{ color: '#FF00C7' }} />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-4xl font-bold" style={{ color: 'var(--neon-magenta)' }}>{stats?.totalProfessores || 0}</div>
+                  <div className="text-4xl font-bold" style={{ color: '#FF00C7' }}>{stats?.totalProfessores || 0}</div>
                 </CardContent>
               </Card>
             </div>
@@ -124,10 +124,10 @@ export default function Home() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Gráfico de Barras Horizontais - Distribuição por Curso */}
-            <Card style={{ backgroundColor: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <Card style={{ backgroundColor: '#141C2F', border: '1px solid rgba(255,255,255,0.1)' }}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-white">
-                  <PieChartIcon className="h-5 w-5" style={{ color: 'var(--neon-cyan)' }} />
+                  <PieChartIcon className="h-5 w-5" style={{ color: '#00C2FF' }} />
                   Distribuição de Videoaulas por Curso
                 </CardTitle>
               </CardHeader>
@@ -159,7 +159,7 @@ export default function Home() {
                       />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: 'var(--bg-card)',
+                          backgroundColor: '#141C2F',
                           border: '1px solid rgba(255,255,255,0.2)',
                           borderRadius: '8px',
                           color: '#FFFFFF'
@@ -170,16 +170,12 @@ export default function Home() {
                         dataKey="total" 
                         radius={[0, 4, 4, 0]}
                       >
-                        {porCurso.map((entry, index) => {
-                          const nomeSimplificado = entry.curso.nome.replace('Bacharelado em ', '').replace('Tecnologia em ', 'Tec. ');
-                          const color = cursoColors[nomeSimplificado] || 'var(--neon-cyan)';
-                          return (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={color}
-                            />
-                          );
-                        })}
+                        {porCurso.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={barColors[index]}
+                          />
+                        ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
@@ -190,10 +186,10 @@ export default function Home() {
             </Card>
 
             {/* Gráfico de Área com Gradiente - Evolução Temporal */}
-            <Card style={{ backgroundColor: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <Card style={{ backgroundColor: '#141C2F', border: '1px solid rgba(255,255,255,0.1)' }}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-white">
-                  <TrendingUp className="h-5 w-5" style={{ color: 'var(--neon-cyan)' }} />
+                  <TrendingUp className="h-5 w-5" style={{ color: '#00C2FF' }} />
                   Evolução Temporal de Videoaulas
                 </CardTitle>
               </CardHeader>
@@ -206,9 +202,9 @@ export default function Home() {
                     >
                       <defs>
                         <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--neon-cyan)" stopOpacity={0.8}/>
-                          <stop offset="50%" stopColor="var(--neon-purple)" stopOpacity={0.6}/>
-                          <stop offset="100%" stopColor="var(--neon-magenta)" stopOpacity={0.4}/>
+                          <stop offset="0%" stopColor="#00C2FF" stopOpacity={0.8}/>
+                          <stop offset="50%" stopColor="#9D00FF" stopOpacity={0.6}/>
+                          <stop offset="100%" stopColor="#FF00C7" stopOpacity={0.4}/>
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -225,7 +221,7 @@ export default function Home() {
                       />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: 'var(--bg-card)',
+                          backgroundColor: '#141C2F',
                           border: '1px solid rgba(255,255,255,0.2)',
                           borderRadius: '8px',
                           color: '#FFFFFF'
@@ -234,7 +230,7 @@ export default function Home() {
                       <Area
                         type="monotone"
                         dataKey="total"
-                        stroke="var(--neon-cyan)"
+                        stroke="#00C2FF"
                         strokeWidth={3}
                         fill="url(#colorGradient)"
                       />

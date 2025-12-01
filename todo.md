@@ -609,3 +609,9 @@
 - [x] Remover rotas de Estatísticas e Visualizações do App.tsx
 - [x] Remover links de navegação do Layout.tsx
 - [x] Testar visual e salvar checkpoint
+
+
+## 🎨 Correção Final da Paleta de Cores
+- [x] Corrigir array de cores do gráfico de barras (usar HEX sequencial, não variáveis CSS)
+- [x] Ajustar gradiente do gráfico de área para terminar em magenta #FF00C7
+- [x] Testar visual final e salvar checkpoint
