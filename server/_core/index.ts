@@ -46,7 +46,8 @@ export async function createApp(): Promise<{ app: Express; server: any }> {
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
-  } else {
+  } else if (!process.env.VERCEL) {
+    // Only serve static files if NOT on Vercel (Vercel handles this via CDN)
     serveStatic(app);
   }
   return { app, server };
