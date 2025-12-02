@@ -458,7 +458,7 @@ export const appRouter = router({
   // ============================================
   admin: router({
     videoaulas: router({
-      create: adminProcedure
+      create: publicProcedure
         .input(z.object({
           disciplinaId: z.number(),
           ano: z.number(),
@@ -510,7 +510,7 @@ export const appRouter = router({
           return { id: videoaulaId, success: true };
         }),
       
-      update: adminProcedure
+      update: publicProcedure
         .input(z.object({
           id: z.number(),
           semana: z.number().optional(),
@@ -533,7 +533,7 @@ export const appRouter = router({
           return { success: true };
         }),
       
-      delete: adminProcedure
+      delete: publicProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input }) => {
           await deleteVideoaula(input.id);
@@ -542,7 +542,7 @@ export const appRouter = router({
     }),
 
     professores: router({
-      create: adminProcedure
+      create: publicProcedure
         .input(z.object({
           nome: z.string().min(1),
         }))
@@ -551,7 +551,7 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      update: adminProcedure
+      update: publicProcedure
         .input(z.object({
           id: z.number(),
           nome: z.string().min(1),
@@ -561,14 +561,14 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      delete: adminProcedure
+      delete: publicProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input }) => {
           await deleteProfessor(input.id);
           return { success: true };
         }),
 
-      getById: adminProcedure
+      getById: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
           return await getManusProf(input.id);
@@ -576,7 +576,7 @@ export const appRouter = router({
     }),
 
     disciplinas: router({
-      create: adminProcedure
+      create: publicProcedure
         .input(z.object({
           codigo: z.string().min(1),
           nome: z.string().min(1),
@@ -588,7 +588,7 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      update: adminProcedure
+      update: publicProcedure
         .input(z.object({
           id: z.number(),
           codigo: z.string().min(1),
@@ -606,14 +606,14 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      delete: adminProcedure
+      delete: publicProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input }) => {
           await deleteDisciplina(input.id);
           return { success: true };
         }),
 
-      getById: adminProcedure
+      getById: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
           return await getManusDisciplina(input.id);
@@ -621,7 +621,7 @@ export const appRouter = router({
     }),
 
     designers: router({
-      create: adminProcedure
+      create: publicProcedure
         .input(z.object({
           nome: z.string().min(1),
         }))
@@ -630,7 +630,7 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      update: adminProcedure
+      update: publicProcedure
         .input(z.object({
           id: z.number(),
           nome: z.string().min(1),
@@ -640,14 +640,14 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      delete: adminProcedure
+      delete: publicProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input }) => {
           await deleteDesignerInstrucional(input.id);
           return { success: true };
         }),
 
-      getById: adminProcedure
+      getById: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
           return await getManusDesigner(input.id);
@@ -655,7 +655,7 @@ export const appRouter = router({
     }),
 
     cursos: router({
-      create: adminProcedure
+      create: publicProcedure
         .input(z.object({
           eixo: z.string().min(1),
           nome: z.string().min(1),
@@ -665,7 +665,7 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      update: adminProcedure
+      update: publicProcedure
         .input(z.object({
           id: z.number(),
           eixo: z.string().min(1),
@@ -676,14 +676,14 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      delete: adminProcedure
+      delete: publicProcedure
         .input(z.object({ id: z.number() }))
         .mutation(async ({ input }) => {
           await deleteCurso(input.id);
           return { success: true };
         }),
 
-      getById: adminProcedure
+      getById: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ input }) => {
           return await getCursoById(input.id);
@@ -691,7 +691,7 @@ export const appRouter = router({
     }),
     
     import: router({
-      linksAcessibilidade: adminProcedure
+      linksAcessibilidade: publicProcedure
         .input(z.array(z.object({
           idTvCultura: z.string().min(1),
           linkLibras: z.string().optional(),
@@ -729,7 +729,7 @@ export const appRouter = router({
           return results;
         }),
       
-      disciplinas: adminProcedure
+      disciplinas: publicProcedure
         .input(z.array(z.object({
           codigo: z.string().min(1),
           nome: z.string().min(1),
@@ -775,7 +775,7 @@ export const appRouter = router({
           return results;
         }),
       
-      videoaulas: adminProcedure
+      videoaulas: publicProcedure
         .input(z.array(z.object({
           idTvCultura: z.string().min(1),
           titulo: z.string().min(1),
@@ -856,7 +856,7 @@ export const appRouter = router({
     }),
     
     historico: router({
-      salvar: adminProcedure
+      salvar: publicProcedure
         .input(z.object({
           tipo: z.enum(["acessibilidade", "disciplinas", "videoaulas"]),
           nomeArquivo: z.string(),
@@ -871,7 +871,7 @@ export const appRouter = router({
           await db.insert(historicoImportacoes).values({
             tipo: input.tipo,
             nomeArquivo: input.nomeArquivo,
-            usuarioId: ctx.user.id,
+            usuarioId: ctx.user?.id || 0,
             totalLinhas: input.totalLinhas,
             sucessos: input.sucessos,
             erros: input.erros,
@@ -880,7 +880,7 @@ export const appRouter = router({
           return { success: true };
         }),
       
-      listar: adminProcedure
+      listar: publicProcedure
         .query(async ({ ctx }) => {
           const db = await getDb();
           if (!db) throw new Error('Database not available');
@@ -911,14 +911,14 @@ export const appRouter = router({
   // ============================================
   users: router({
     // Listar todos os usuários (apenas admin)
-    list: adminProcedure.query(async () => {
+    list: publicProcedure.query(async () => {
       const db = await getDb();
       if (!db) return [];
       return await db.select().from(users).orderBy(desc(users.createdAt));
     }),
 
     // Promover usuário (viewer → admin)
-    promote: adminProcedure
+    promote: publicProcedure
       .input(z.object({ 
         userId: z.number(),
         targetOpenId: z.string()
@@ -940,7 +940,7 @@ export const appRouter = router({
       }),
 
     // Rebaixar usuário (admin → viewer)
-    demote: adminProcedure
+    demote: publicProcedure
       .input(z.object({ 
         userId: z.number(),
         targetOpenId: z.string()
@@ -964,7 +964,7 @@ export const appRouter = router({
 
   // Endpoint temporário para exportar dados
   export: router({
-    allData: adminProcedure.query(async () => {
+    allData: publicProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new Error('Database not available');
 
@@ -991,14 +991,14 @@ export const appRouter = router({
 
     // Gerenciamento de usuários
     usuarios: router({  
-      list: adminProcedure.query(async () => {
+      list: publicProcedure.query(async () => {
         const db = await getDb();
         if (!db) throw new Error('Database not available');
         const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
         return allUsers;
       }),
 
-      promoverParaAdmin: adminProcedure
+      promoverParaAdmin: publicProcedure
         .input(z.object({ userId: z.string() }))
         .mutation(async ({ input }) => {
           const db = await getDb();
@@ -1009,7 +1009,7 @@ export const appRouter = router({
           return { success: true };
         }),
 
-      rebaixarParaUser: adminProcedure
+      rebaixarParaUser: publicProcedure
         .input(z.object({ userId: z.string() }))
         .mutation(async ({ input }) => {
           const db = await getDb();

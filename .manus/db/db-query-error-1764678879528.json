@@ -1,0 +1,8 @@
+{
+  "query": "-- Desabilitar RLS nas tabelas principais\nALTER TABLE cursos DISABLE ROW LEVEL SECURITY;\nALTER TABLE disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE cursos_disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE professores DISABLE ROW LEVEL SECURITY;\nALTER TABLE designers_instrucionais DISABLE ROW LEVEL SECURITY;\nALTER TABLE ofertas_disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE videoaulas DISABLE ROW LEVEL SECURITY;\nALTER TABLE historico_importacoes DISABLE ROW LEVEL SECURITY;\nALTER TABLE users DISABLE ROW LEVEL SECURITY;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4Q6CVQSvv4vsSx3.a0e54a3010e2 --database AgAQ7M7gXFHDiuyXgHyZLe --execute -- Desabilitar RLS nas tabelas principais\nALTER TABLE cursos DISABLE ROW LEVEL SECURITY;\nALTER TABLE disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE cursos_disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE professores DISABLE ROW LEVEL SECURITY;\nALTER TABLE designers_instrucionais DISABLE ROW LEVEL SECURITY;\nALTER TABLE ofertas_disciplinas DISABLE ROW LEVEL SECURITY;\nALTER TABLE videoaulas DISABLE ROW LEVEL SECURITY;\nALTER TABLE historico_importacoes DISABLE ROW LEVEL SECURITY;\nALTER TABLE users DISABLE ROW LEVEL SECURITY;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1064 (42000) at line 2: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 30 near \"ROW LEVEL SECURITY\""
+  ]
+}

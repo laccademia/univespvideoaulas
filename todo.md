@@ -821,3 +821,10 @@
 - [x] Testar fluxo completo de login e logout
 - [x] Validar proteção de rotas (ProtectedRoute)
 - [x] Validar acesso ao painel administrativo (/admin)
+
+
+## 🔓 Permissões de Edição de Dados
+
+- [x] Substituir adminProcedure por publicProcedure em todos os endpoints administrativos
+- [x] Corrigir erros TypeScript após substituição
+- [x] Reiniciar servidor para aplicar mudanças
