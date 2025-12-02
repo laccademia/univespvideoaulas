@@ -35,6 +35,43 @@ export async function createApp(): Promise<{ app: Express; server: any }> {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+
+  // Debug DB Endpoint
+  app.get("/api/debug-db", async (req, res) => {
+    try {
+      if (!process.env.DATABASE_URL) {
+        res.status(500).json({ error: "DATABASE_URL is missing" });
+        return;
+      }
+      const { drizzle } = await import("drizzle-orm/postgres-js");
+      const postgres = (await import("postgres")).default;
+      const { sql } = await import("drizzle-orm");
+      const { videoaulas } = await import("../drizzle/schema");
+
+      const client = postgres(process.env.DATABASE_URL);
+      const db = drizzle(client);
+
+      const [result] = await db.select({ count: sql<number>\`count(*)\` }).from(videoaulas);
+      
+      res.json({ 
+        status: "ok", 
+        message: "Connected to database", 
+        videoaulasCount: result.count,
+        env: {
+          hasDbUrl: !!process.env.DATABASE_URL,
+          nodeEnv: process.env.NODE_ENV
+        }
+      });
+    } catch (error: any) {
+      console.error("Debug DB Error:", error);
+      res.status(500).json({ 
+        error: "Failed to connect to database", 
+        details: error.message,
+        stack: error.stack 
+      });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -60,7 +97,7 @@ async function startServer() {
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+    console.log(`Port ${ preferredPort } is busy, using port ${ port } instead`);
   }
 
   server.listen(port, () => {
