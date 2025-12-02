@@ -51,11 +51,11 @@ export async function createApp(): Promise<{ app: Express; server: any }> {
       const client = postgres(process.env.DATABASE_URL);
       const db = drizzle(client);
 
-      const [result] = await db.select({ count: sql<number>\`count(*)\` }).from(videoaulas);
-      
-      res.json({ 
-        status: "ok", 
-        message: "Connected to database", 
+      const [result] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas);
+
+      res.json({
+        status: "ok",
+        message: "Connected to database",
         videoaulasCount: result.count,
         env: {
           hasDbUrl: !!process.env.DATABASE_URL,
@@ -64,10 +64,10 @@ export async function createApp(): Promise<{ app: Express; server: any }> {
       });
     } catch (error: any) {
       console.error("Debug DB Error:", error);
-      res.status(500).json({ 
-        error: "Failed to connect to database", 
+      res.status(500).json({
+        error: "Failed to connect to database",
         details: error.message,
-        stack: error.stack 
+        stack: error.stack
       });
     }
   });
@@ -97,7 +97,7 @@ async function startServer() {
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
-    console.log(`Port ${ preferredPort } is busy, using port ${ port } instead`);
+    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
   server.listen(port, () => {
