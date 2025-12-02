@@ -2,7 +2,7 @@
  * Helpers de autenticação usando Supabase Auth
  */
 
-import { supabase } from './supabase-db';
+import { supabase } from './supabase';
 
 export interface SupabaseUser {
   id: string;
@@ -72,7 +72,7 @@ export async function signUp(email: string, password: string, name?: string) {
   // Importar getDb aqui para evitar circular dependency
   const { getDb } = await import('./db');
   const { users } = await import('../drizzle/schema');
-  
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -91,20 +91,20 @@ export async function signUp(email: string, password: string, name?: string) {
     if (error.message.includes('Database error')) {
       console.warn('[SIGNUP] Ignorando erro do Supabase:', error.message);
       console.log('[SIGNUP] Tentando fazer login para obter o user ID...');
-      
+
       // Fazer login para obter o user ID
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
+
       if (signInError || !signInData.user) {
         console.error('[SIGNUP] Não foi possível fazer login após cadastro:', signInError?.message);
         throw new Error('Conta criada mas não foi possível fazer login automaticamente');
       }
-      
+
       console.log('[SIGNUP] Login bem-sucedido! User ID:', signInData.user.id);
-      
+
       // Substituir data com os dados do login
       (data as any).user = signInData.user;
       (data as any).session = signInData.session;
@@ -119,15 +119,15 @@ export async function signUp(email: string, password: string, name?: string) {
       console.log('[SIGNUP] Tentando salvar usuário no banco Manus...');
       console.log('[SIGNUP] User ID:', data.user.id);
       console.log('[SIGNUP] Email:', data.user.email);
-      
+
       const db = await getDb();
       if (!db) {
         console.error('[SIGNUP] Database não disponível!');
         throw new Error('Database not available');
       }
-      
+
       console.log('[SIGNUP] Database conectado, inserindo...');
-      
+
       const userData = {
         openId: data.user.id,
         email: data.user.email || email,
@@ -135,11 +135,11 @@ export async function signUp(email: string, password: string, name?: string) {
         role: 'viewer' as const,
         loginMethod: 'email' as const,
       };
-      
+
       console.log('[SIGNUP] Dados a inserir:', JSON.stringify(userData, null, 2));
-      
+
       await db.insert(users).values(userData);
-      
+
       console.log('[SIGNUP] Usuário salvo com sucesso no banco Manus!');
     } catch (dbError: any) {
       console.error('[SIGNUP] Erro ao salvar no banco:', dbError);
@@ -165,7 +165,7 @@ export async function signOut() {
  */
 export async function getCurrentUser(): Promise<SupabaseUser | null> {
   const { data: { session } } = await supabase.auth.getSession();
-  
+
   if (!session) return null;
 
   // Buscar role do usuário

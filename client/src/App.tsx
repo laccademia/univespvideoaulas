@@ -41,7 +41,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function Router() {
   return (
     <Switch>
-      <Route path={"/login"} component={Login} />
+      {/* <Route path={"/login"} component={Login} /> */}
       <Route path={"/export-data"}><ProtectedRoute><ExportData /></ProtectedRoute></Route>
       <Route path={"/"}><ProtectedRoute><Home /></ProtectedRoute></Route>
       <Route path={"/cursos"}><ProtectedRoute><Cursos /></ProtectedRoute></Route>

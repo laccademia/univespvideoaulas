@@ -1,7 +1,8 @@
 import { eq, and, like, or, desc, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
-import { 
-  InsertUser, 
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import {
+  InsertUser,
   users,
   cursos,
   disciplinas,
@@ -25,7 +26,12 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const client = postgres(process.env.DATABASE_URL);
+      _db = drizzle(client, {
+        schema: {
+          users, cursos, disciplines: disciplinas, cursosDisciplinas, professores, designersInstrucionais, ofertasDisciplinas, videoaulas
+        }
+      });
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -93,7 +99,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
+    await db.insert(users).values(values).onConflictDoUpdate({
+      target: users.openId,
       set: updateSet,
     });
   } catch (error) {
@@ -121,8 +128,9 @@ export async function getUserByOpenId(openId: string) {
 export async function insertCurso(curso: InsertCurso) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  await db.insert(cursos).values(curso).onDuplicateKeyUpdate({
+
+  await db.insert(cursos).values(curso).onConflictDoUpdate({
+    target: cursos.nome,
     set: { eixo: curso.eixo, nome: curso.nome }
   });
 }
@@ -130,14 +138,14 @@ export async function insertCurso(curso: InsertCurso) {
 export async function getAllCursos() {
   const db = await getDb();
   if (!db) return [];
-  
+
   return await db.select().from(cursos);
 }
 
 export async function getCursoById(id: number) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(cursos).where(eq(cursos.id, id)).limit(1);
   return result[0] || null;
 }
@@ -145,7 +153,7 @@ export async function getCursoById(id: number) {
 export async function getCursoByNome(nome: string) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(cursos).where(eq(cursos.nome, nome)).limit(1);
   return result[0] || null;
 }
@@ -157,9 +165,10 @@ export async function getCursoByNome(nome: string) {
 export async function insertDisciplina(disciplina: InsertDisciplina) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  await db.insert(disciplinas).values(disciplina).onDuplicateKeyUpdate({
-    set: { 
+
+  await db.insert(disciplinas).values(disciplina).onConflictDoUpdate({
+    target: disciplinas.codigo,
+    set: {
       nome: disciplina.nome,
       cargaHoraria: disciplina.cargaHoraria,
     }
@@ -169,21 +178,21 @@ export async function insertDisciplina(disciplina: InsertDisciplina) {
 export async function insertCursoDisciplina(cursoDisciplina: InsertCursoDisciplina) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   await db.insert(cursosDisciplinas).values(cursoDisciplina);
 }
 
 export async function getAllDisciplinas() {
   const db = await getDb();
   if (!db) return [];
-  
+
   return await db.select().from(disciplinas);
 }
 
 export async function getDisciplinaByCodigo(codigo: string) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(disciplinas).where(eq(disciplinas.codigo, codigo)).limit(1);
   return result[0] || null;
 }
@@ -191,7 +200,7 @@ export async function getDisciplinaByCodigo(codigo: string) {
 export async function getDisciplinasByCursoId(cursoId: number) {
   const db = await getDb();
   if (!db) return [];
-  
+
   // Buscar através da tabela de relacionamento
   const result = await db
     .select({
@@ -201,7 +210,7 @@ export async function getDisciplinasByCursoId(cursoId: number) {
     .from(cursosDisciplinas)
     .innerJoin(disciplinas, eq(cursosDisciplinas.disciplinaId, disciplinas.id))
     .where(eq(cursosDisciplinas.cursoId, cursoId));
-  
+
   return result.map(r => ({
     ...r.disciplina,
     anoCurso: r.cursoDisciplina.anoCurso,
@@ -216,8 +225,9 @@ export async function getDisciplinasByCursoId(cursoId: number) {
 export async function insertProfessor(professor: InsertProfessor) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  await db.insert(professores).values(professor).onDuplicateKeyUpdate({
+
+  await db.insert(professores).values(professor).onConflictDoUpdate({
+    target: professores.nome,
     set: { nome: professor.nome }
   });
 }
@@ -225,14 +235,14 @@ export async function insertProfessor(professor: InsertProfessor) {
 export async function getAllProfessores() {
   const db = await getDb();
   if (!db) return [];
-  
+
   return await db.select().from(professores);
 }
 
 export async function getProfessorByNome(nome: string) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(professores).where(eq(professores.nome, nome)).limit(1);
   return result[0] || null;
 }
@@ -244,8 +254,9 @@ export async function getProfessorByNome(nome: string) {
 export async function insertDesignerInstrucional(di: InsertDesignerInstrucional) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  await db.insert(designersInstrucionais).values(di).onDuplicateKeyUpdate({
+
+  await db.insert(designersInstrucionais).values(di).onConflictDoUpdate({
+    target: designersInstrucionais.nome,
     set: { nome: di.nome }
   });
 }
@@ -253,14 +264,14 @@ export async function insertDesignerInstrucional(di: InsertDesignerInstrucional)
 export async function getAllDesignersInstrucionais() {
   const db = await getDb();
   if (!db) return [];
-  
+
   return await db.select().from(designersInstrucionais);
 }
 
 export async function getDesignerInstrucionalByNome(nome: string) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(designersInstrucionais).where(eq(designersInstrucionais.nome, nome)).limit(1);
   return result[0] || null;
 }
@@ -272,15 +283,15 @@ export async function getDesignerInstrucionalByNome(nome: string) {
 export async function insertOfertaDisciplina(oferta: InsertOfertaDisciplina) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  const result = await db.insert(ofertasDisciplinas).values(oferta);
+
+  const result = await db.insert(ofertasDisciplinas).values(oferta).returning({ id: ofertasDisciplinas.id });
   return result;
 }
 
 export async function getOfertaByDisciplinaAnoEBimestre(disciplinaId: number, ano: number, bimestreOperacional: number) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(ofertasDisciplinas).where(
     and(
       eq(ofertasDisciplinas.disciplinaId, disciplinaId),
@@ -288,7 +299,7 @@ export async function getOfertaByDisciplinaAnoEBimestre(disciplinaId: number, an
       eq(ofertasDisciplinas.bimestreOperacional, bimestreOperacional)
     )
   ).limit(1);
-  
+
   return result[0] || null;
 }
 
@@ -299,21 +310,21 @@ export async function getOfertaByDisciplinaAnoEBimestre(disciplinaId: number, an
 export async function insertVideoaula(videoaula: InsertVideoaula) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   await db.insert(videoaulas).values(videoaula);
 }
 
 export async function getAllVideoaulas() {
   const db = await getDb();
   if (!db) return [];
-  
+
   return await db.select().from(videoaulas);
 }
 
 export async function getVideoaulaById(id: number) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const result = await db.select().from(videoaulas).where(eq(videoaulas.id, id)).limit(1);
   return result[0] || null;
 }
@@ -325,7 +336,7 @@ export async function getVideoaulaById(id: number) {
 export async function getVideoaulasComDetalhes() {
   const db = await getDb();
   if (!db) return [];
-  
+
   // Nota: Como disciplinas agora podem ter múltiplos cursos, não incluimos curso aqui
   // O curso deve ser obtido via cursosDisciplinas quando necessário
   return await db
@@ -348,7 +359,7 @@ export async function getVideoaulasComDetalhes() {
 export async function getDisciplinasComCurso() {
   const db = await getDb();
   if (!db) return [];
-  
+
   // Buscar disciplinas com seus cursos através da tabela de relacionamento
   const results = await db
     .select({
@@ -359,25 +370,25 @@ export async function getDisciplinasComCurso() {
     .from(disciplinas)
     .leftJoin(cursosDisciplinas, eq(disciplinas.id, cursosDisciplinas.disciplinaId))
     .leftJoin(cursos, eq(cursosDisciplinas.cursoId, cursos.id));
-  
+
   // Agrupar disciplinas únicas com seus cursos
   const disciplinasMap = new Map();
-  
+
   for (const row of results) {
     const disciplinaId = row.disciplina.id;
-    
+
     if (!disciplinasMap.has(disciplinaId)) {
       disciplinasMap.set(disciplinaId, {
         disciplina: row.disciplina,
         cursos: [],
       });
     }
-    
+
     if (row.curso) {
       disciplinasMap.get(disciplinaId).cursos.push(row.curso);
     }
   }
-  
+
   return Array.from(disciplinasMap.values());
 }
 
@@ -388,18 +399,18 @@ export async function getDisciplinasComCurso() {
 export async function getEstatisticasGerais() {
   const db = await getDb();
   if (!db) return null;
-  
+
   const [totalVideoaulas] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas);
   const [totalDisciplinas] = await db.select({ count: sql<number>`count(*)` }).from(disciplinas);
   const [totalCursos] = await db.select({ count: sql<number>`count(*)` }).from(cursos);
   const [totalProfessores] = await db.select({ count: sql<number>`count(*)` }).from(professores);
   const [totalDIs] = await db.select({ count: sql<number>`count(*)` }).from(designersInstrucionais);
-  
+
   const [comLibras] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(sql`${videoaulas.linkLibras} IS NOT NULL AND ${videoaulas.linkLibras} != ''`);
   const [comAudiodescricao] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(sql`${videoaulas.linkAudiodescricao} IS NOT NULL AND ${videoaulas.linkAudiodescricao} != ''`);
   const [comCC] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(eq(videoaulas.ccLegenda, true));
   const [comSlides] = await db.select({ count: sql<number>`count(*)` }).from(videoaulas).where(eq(videoaulas.slidesDisponivel, true));
-  
+
   return {
     totalVideoaulas: totalVideoaulas?.count || 0,
     totalDisciplinas: totalDisciplinas?.count || 0,
@@ -422,15 +433,15 @@ export async function getEstatisticasGerais() {
 export async function createVideoaula(data: InsertVideoaula) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
-  const [result] = await db.insert(videoaulas).values(data);
-  return result.insertId;
+
+  const [result] = await db.insert(videoaulas).values(data).returning({ id: videoaulas.id });
+  return result.id;
 }
 
 export async function updateVideoaula(id: number, data: Partial<InsertVideoaula>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   await db.update(videoaulas).set(data).where(eq(videoaulas.id, id));
   return true;
 }
@@ -438,7 +449,7 @@ export async function updateVideoaula(id: number, data: Partial<InsertVideoaula>
 export async function deleteVideoaula(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   await db.delete(videoaulas).where(eq(videoaulas.id, id));
   return true;
 }
@@ -456,7 +467,7 @@ export async function getOrCreateOfertaDisciplina(
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   // Buscar oferta existente
   const [existing] = await db
     .select()
@@ -469,11 +480,11 @@ export async function getOrCreateOfertaDisciplina(
       )
     )
     .limit(1);
-  
+
   if (existing) {
     return existing.id;
   }
-  
+
   // Criar nova oferta
   const [result] = await db.insert(ofertasDisciplinas).values({
     disciplinaId,
@@ -482,9 +493,9 @@ export async function getOrCreateOfertaDisciplina(
     professorId: professorId || null,
     diId: diId || null,
     tipo: "OFERTA",
-  });
-  
-  return result.insertId;
+  }).returning({ id: ofertasDisciplinas.id });
+
+  return result.id;
 }
 
 
@@ -495,7 +506,7 @@ export async function getOrCreateOfertaDisciplina(
 export async function createProfessor(data: { nome: string }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const [result] = await db.insert(professores).values(data);
+  const [result] = await db.insert(professores).values(data).returning({ id: professores.id });
   return result;
 }
 
@@ -526,16 +537,16 @@ export async function getProfessorById(id: number) {
 export async function createDisciplina(data: { codigo: string; nome: string; cargaHoraria: number; cursoIds: number[] }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   // Inserir disciplina
   const [result] = await db.insert(disciplinas).values({
     codigo: data.codigo,
     nome: data.nome,
     cargaHoraria: data.cargaHoraria,
-  });
-  
-  const disciplinaId = result.insertId;
-  
+  }).returning({ id: disciplinas.id });
+
+  const disciplinaId = result.id;
+
   // Inserir relacionamentos com cursos
   if (data.cursoIds.length > 0) {
     await db.insert(cursosDisciplinas).values(
@@ -545,24 +556,24 @@ export async function createDisciplina(data: { codigo: string; nome: string; car
       }))
     );
   }
-  
+
   return result;
 }
 
 export async function updateDisciplina(id: number, data: { codigo: string; nome: string; cargaHoraria: number; cursoIds: number[] }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   // Atualizar disciplina
   await db.update(disciplinas).set({
     codigo: data.codigo,
     nome: data.nome,
     cargaHoraria: data.cargaHoraria,
   }).where(eq(disciplinas.id, id));
-  
+
   // Remover relacionamentos antigos
   await db.delete(cursosDisciplinas).where(eq(cursosDisciplinas.disciplinaId, id));
-  
+
   // Inserir novos relacionamentos
   if (data.cursoIds.length > 0) {
     await db.insert(cursosDisciplinas).values(
@@ -577,10 +588,10 @@ export async function updateDisciplina(id: number, data: { codigo: string; nome:
 export async function deleteDisciplina(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   // Remover relacionamentos primeiro
   await db.delete(cursosDisciplinas).where(eq(cursosDisciplinas.disciplinaId, id));
-  
+
   // Remover disciplina
   await db.delete(disciplinas).where(eq(disciplinas.id, id));
 }
@@ -588,17 +599,17 @@ export async function deleteDisciplina(id: number) {
 export async function getDisciplinaById(id: number) {
   const db = await getDb();
   if (!db) return null;
-  
+
   const [disciplina] = await db.select().from(disciplinas).where(eq(disciplinas.id, id));
-  
+
   if (!disciplina) return null;
-  
+
   // Buscar cursos associados
   const cursosAssociados = await db
     .select({ cursoId: cursosDisciplinas.cursoId })
     .from(cursosDisciplinas)
     .where(eq(cursosDisciplinas.disciplinaId, id));
-  
+
   return {
     ...disciplina,
     cursoIds: cursosAssociados.map(c => c.cursoId),
@@ -613,7 +624,7 @@ export async function getDisciplinaById(id: number) {
 export async function createDesignerInstrucional(data: { nome: string }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const [result] = await db.insert(designersInstrucionais).values(data);
+  const [result] = await db.insert(designersInstrucionais).values(data).returning({ id: designersInstrucionais.id });
   return result;
 }
 
@@ -644,7 +655,7 @@ export async function getDesignerInstrucionalById(id: number) {
 export async function createCurso(data: { eixo: string; nome: string }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const [result] = await db.insert(cursos).values(data);
+  const [result] = await db.insert(cursos).values(data).returning({ id: cursos.id });
   return result;
 }
 
@@ -657,10 +668,10 @@ export async function updateCurso(id: number, data: { eixo: string; nome: string
 export async function deleteCurso(id: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  
+
   // Remover relacionamentos com disciplinas primeiro
   await db.delete(cursosDisciplinas).where(eq(cursosDisciplinas.cursoId, id));
-  
+
   // Remover curso
   await db.delete(cursos).where(eq(cursos.id, id));
 }

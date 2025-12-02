@@ -1,54 +1,12 @@
 {
   "version": "7",
-  "dialect": "mysql",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1764512569258,
-      "tag": "0000_far_the_captain",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1764512632508,
-      "tag": "0001_perfect_edwin_jarvis",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1764541054134,
-      "tag": "0002_cold_lyja",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1764609659908,
-      "tag": "0003_overjoyed_king_cobra",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1764612814981,
-      "tag": "0004_careless_kree",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1764614696269,
-      "tag": "0005_chief_adam_destine",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1764628643510,
-      "tag": "0006_flimsy_frank_castle",
+      "version": "7",
+      "when": 1764698237313,
+      "tag": "0000_gigantic_tyrannus",
       "breakpoints": true
     }
   ]

@@ -3,12 +3,7 @@
  * Estrutura idêntica ao banco Manus (com ofertasDisciplinas)
  */
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = 'https://kpbjgpdiboolqmlbhves.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYmpncGRpYm9vbHFtbGJodmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1ODE0NjMsImV4cCI6MjA4MDE1NzQ2M30.RlwNmYFqTVAP6U5dtx0rBaeGdG-JEX3UwxuDuG3QUP8';
-
-export const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from './supabase';
 
 // ============= CURSOS =============
 
@@ -17,7 +12,7 @@ export async function getAllCursos() {
     .from('cursos')
     .select('*')
     .order('nome', { ascending: true });
-  
+
   if (error) throw error;
   return data;
 }
@@ -28,7 +23,7 @@ export async function getCursoById(id: number) {
     .select('*')
     .eq('id', id)
     .single();
-  
+
   if (error) throw error;
   return data;
 }
@@ -40,7 +35,7 @@ export async function getAllDisciplinas() {
     .from('disciplinas')
     .select('*')
     .order('nome', { ascending: true });
-  
+
   if (error) throw error;
   return data;
 }
@@ -51,7 +46,7 @@ export async function getDisciplinaById(id: number) {
     .select('*')
     .eq('id', id)
     .single();
-  
+
   if (error) throw error;
   return data;
 }
@@ -62,7 +57,7 @@ export async function getCursosDisciplinas() {
   const { data, error } = await supabase
     .from('cursosDisciplinas')
     .select('*');
-  
+
   if (error) throw error;
   return data;
 }
@@ -72,12 +67,12 @@ export async function getDisciplinasByCursoId(cursoId: number) {
     .from('cursosDisciplinas')
     .select('disciplinaId')
     .eq('cursoId', cursoId);
-  
+
   if (error) throw error;
 
   const disciplinasIds = relacoes.map((r: any) => r.disciplinaId);
   const disciplinas = await getAllDisciplinas();
-  
+
   return disciplinas.filter((d: any) => disciplinasIds.includes(d.id));
 }
 
@@ -88,7 +83,7 @@ export async function getAllProfessores() {
     .from('professores')
     .select('*')
     .order('nome', { ascending: true });
-  
+
   if (error) throw error;
   return data;
 }
@@ -100,7 +95,7 @@ export async function getAllDesigners() {
     .from('designersInstrucionais')
     .select('*')
     .order('nome', { ascending: true });
-  
+
   if (error) throw error;
   return data;
 }
@@ -111,7 +106,7 @@ export async function getAllOfertasDisciplinas() {
   const { data, error } = await supabase
     .from('ofertasDisciplinas')
     .select('*');
-  
+
   if (error) throw error;
   return data;
 }
@@ -124,7 +119,7 @@ export async function getAllVideoaulas() {
     .select('*')
     .order('id', { ascending: false })
     .limit(10000);
-  
+
   if (error) throw error;
   return data;
 }
@@ -135,7 +130,7 @@ export async function getVideoaulaById(id: number) {
     .select('*')
     .eq('id', id)
     .single();
-  
+
   if (error) throw error;
   return data;
 }
@@ -190,19 +185,19 @@ export async function getDisciplinasComCurso() {
 
   // Agrupar disciplinas únicas com seus cursos
   const disciplinasMap = new Map();
-  
+
   disciplinas.forEach((disciplina: any) => {
     const cursosAssociados = cursosDisciplinas
       .filter((cd: any) => cd.disciplinaId === disciplina.id)
       .map((cd: any) => cursosMap.get(cd.cursoId))
       .filter(Boolean);
-    
+
     disciplinasMap.set(disciplina.id, {
       disciplina,
       cursos: cursosAssociados,
     });
   });
-  
+
   return Array.from(disciplinasMap.values());
 }
 
@@ -233,8 +228,8 @@ export async function getVideoaulasPorCurso() {
     const disciplinasIds = cursosDisciplinas
       .filter((cd: any) => cd.cursoId === curso.id)
       .map((cd: any) => cd.disciplinaId);
-    
-    const videoaulasDoCurso = videoaulasDetalhadas.filter((v: any) => 
+
+    const videoaulasDoCurso = videoaulasDetalhadas.filter((v: any) =>
       v.disciplina && disciplinasIds.includes(v.disciplina.id)
     );
 
@@ -270,12 +265,12 @@ export async function getVideoaulasPorAnoBimestre() {
   const videoaulasDetalhadas = await getVideoaulasComDetalhes();
 
   const grouped: Record<number, Record<number, number>> = {};
-  
+
   videoaulasDetalhadas.forEach((v: any) => {
     if (v.oferta?.ano && v.oferta?.bimestreOperacional) {
       const ano = v.oferta.ano;
       const bimestre = v.oferta.bimestreOperacional;
-      
+
       if (!grouped[ano]) grouped[ano] = {};
       grouped[ano][bimestre] = (grouped[ano][bimestre] || 0) + 1;
     }

@@ -19,10 +19,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode}) {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>({
+    id: "admin-bypass",
+    email: "admin@univesp.br",
+    name: "Admin (Bypass)",
+    role: "admin"
+  });
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const getUserQuery = trpc.auth.getUser.useQuery(undefined, {
     enabled: false, // Não executar automaticamente
   });
@@ -31,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode}) {
     // Verificar sessão atual
     const checkAuth = async () => {
       console.log('[AUTH] Verificando autenticação...');
-      
+
       // Primeiro, verificar localStorage (para login com credenciais do banco)
       const storedUser = localStorage.getItem('supabase_user');
       if (storedUser) {
@@ -50,13 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode}) {
           console.error('[AUTH] Erro ao parsear usuário do localStorage:', error);
         }
       }
-      
+
       // Se não encontrou no localStorage, tentar Supabase Auth
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         console.log('[AUTH] Sessão encontrada no Supabase Auth');
         setSupabaseUser(session.user);
-        
+
         // Buscar role real do banco via tRPC
         try {
           const userData = await getUserQuery.refetch();
@@ -91,8 +96,8 @@ export function AuthProvider({ children }: { children: ReactNode}) {
       }
       setIsLoading(false);
     };
-    
-    checkAuth();
+
+    // checkAuth();
 
     // Escutar mudanças de autenticação
     const {
@@ -100,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode}) {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         setSupabaseUser(session.user);
-        
+
         // Buscar role real do banco
         try {
           const userData = await getUserQuery.refetch();
